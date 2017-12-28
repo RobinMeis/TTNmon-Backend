@@ -5,7 +5,7 @@ $pdo = new PDO('mysql:host=localhost;dbname=smrtnoob_ttnmon', $MYSQL_USER, $MYSQ
 $data = array();
 $data['key'] = 'Testfeld';
 
-$statement = $pdo->prepare("INSERT INTO applications (key) VALUES (:key)");
+$statement = $pdo->prepare("INSERT INTO applications (`key`) VALUES (:key)");
 $statement->execute($data);
 
 $pdo = null;
