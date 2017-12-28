@@ -1,0 +1,1 @@
+# Database structure for TTNmon
