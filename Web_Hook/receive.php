@@ -35,6 +35,13 @@ if (isset($headers["Authorization"])) {
               exit();
             }
           }
+
+          $sfbw = explode("BW", $data["metadata"]["data_rate"]);
+          $cr = explode("/", $data["metadata"]["coding_rate"]);
+          $data["metadata"]["SF"] = str_replace("SF", "", $sfbw[0]);
+          $data["metadata"]["BW"] = $sfbw[1];
+          $data["metadata"]["CR_k"] = $cr[0];
+          $data["metadata"]["CR_n"] = $cr[1];
           //Finally we can assume, that we have all required data and prepare data for saving
 
           if (!isset($data["metadata"]["latitude"]) or !isset($data["metadata"]["longitude"])) { //node lat, lon not available
@@ -50,17 +57,18 @@ if (isset($headers["Authorization"])) {
 
           $mysql_data = array();
           $mysql_data['deveui'] = hex2bin($data["hardware_serial"]);
-          $mysql_data['time'] = null;
-          $mysql_data['frequency'] = null;
+          $mysql_data['pkt_time'] = $data["metadata"]["time"];
+          $mysql_data['frequency'] = $data["metadata"]["frequency"];
           $mysql_data['modulation'] = "LORA";
-          $mysql_data['SF'] = null;
-          $mysql_data['BW'] = null;
-          $mysql_data['CR'] = null;
-          $mysql_data['latitude'] = null;
-          $mysql_data['longitude'] = null;
-          $mysql_data['altitude'] = null;
+          $mysql_data['SF'] = $data["metadata"]["SF"];
+          $mysql_data['BW'] = $data["metadata"]["BW"];
+          $mysql_data['CR_k'] = $data["metadata"]["CR_k"];
+          $mysql_data['CR_n'] = $data["metadata"]["CR_n"];
+          $mysql_data['latitude'] = false;
+          /*$mysql_data['longitude'] = null;
+          $mysql_data['altitude'] = null;*/
 
-          $statement = $pdo->prepare("INSERT INTO packets (`deveui`, `time`, `frequency`, `modulation`, `SF`, `BW`, `CR`, `latitude`, `longitude`, `altitude`) VALUES (:deveui, :time, :frequency, :modulation, :SF, :BW, :CR, :latitude, :longitude, :altitude)");
+          $statement = $pdo->prepare("INSERT INTO packets (`deveui`, `time`, `frequency`, `modulation`, `SF`, `BW`, `CR_k`, `CR_n`, `latitude`) VALUES (:deveui, :pkt_time, :frequency, :modulation, :SF, :BW, :CR_k, :CR_n, :latitude)");
           $statement->execute($mysql_data);
         } else {
           print("Error: Packet data incomplete. Required fields are hardware_serial, metadata, dev_id, time, frequency, data_rate, bit_rate, coding_rate, gateways");
