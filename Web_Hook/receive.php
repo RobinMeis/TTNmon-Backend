@@ -20,7 +20,7 @@ if (isset($headers["Authorization"])) {
 
     if (isset($data["metadata"]["modulation"])) {
       if ($data["metadata"]["modulation"] == "LORA") {
-        if (check_array($data, array("hardware_serial", "metadata", "dev_id")) && check_array($data, array("time", "frequency", "data_rate", "coding_rate", "gateways"))) { //Check packet data for required fields
+        if (check_array($data, array("hardware_serial", "metadata", "dev_id")) && check_array($data["metadata"], array("time", "frequency", "data_rate", "coding_rate", "gateways"))) { //Check packet data for required fields
           foreach ($data["metadata"]["gateways"] as $key=>$gateway) { //Check if all required fields for gateway were transmitted
             if (!isset($gateway["latitude"]) or !isset($gateway["longitude"])) { //gateway lat, lon not available
               $data["metadata"]["gateways"][$key]["latitude"] = null;
@@ -46,7 +46,7 @@ if (isset($headers["Authorization"])) {
           if (!isset($data["metadata"]["altitude"])) //node altitude not available
             $data["metadata"]["altitude"] = null;
 
-            
+
 
         } else {
           print("Error: Packet data incomplete. Required fields are hardware_serial, metadata, dev_id, time, frequency, data_rate, bit_rate, coding_rate, gateways");
