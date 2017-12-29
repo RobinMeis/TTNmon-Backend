@@ -1,5 +1,7 @@
 <?php
 require_once("config.php");
+require_once("check_array.inc.php");
+
 $headers = getallheaders();
 if (isset($headers["Authorization"])) {
   $authorization = $headers["Authorization"];
@@ -12,18 +14,31 @@ if (isset($headers["Authorization"])) {
 
   if (!isset($authorization_id["id"])) { //Auth error
     print("Authorization not found");
-    $pdo = null;
   } else { //Auth success
     $authorization_id = $authorization_id["id"];
-    $data = file_get_contents('php://input');
+    $data = json_decode(file_get_contents('php://input')); //Get request body
 
-    file_put_contents("log.json", $data);
+    if (isset($data["metadata"]["modulation"])) {
+      if ($data["metadata"]["modulation"] == "LORA") {
+        if (check_array($data, array("hardware_serial", "metadata", "dev_id")) && check_array($data, array("time", "frequency", "data_rate", "bit_rate", "coding_rate", "gateways"))) { //Check packet data for required fields
+          foreach ($data["metadata"]["gateways"] as $gateway) { //Check if all required fields for gateway were transmitted
+            if (!check_array($gateway, array("gtw_id", "time", "channel", "rssi", "snr", "rf_chain"))) {
+              print("Error: Gateway data incomplete. Required fields are gtw_id, time, channel, rssi, snr, rf_chain");
+              exit();
+            }
+          }
+          //Finally we can assume, that we have all required data and continue with data storage
+          file_put_contents("log.json", $data); //Log last request
 
-    $fields_root = array("hardware_serial", "is_retry", "metadata", "gateways"); //Check for required fieds in POST
-    $fields_metadata = array("time", "frequency", "modulation", "data_rate", "bit_rate", "coding_rate", "latitude", "longitude", "altitude");
-    $fields_gateway = array("gtw_id", "time", "channel", "rssi", "snr", "rf_chain", "latitude", "longitude", "altitude");
-    $pdo = null;
-
+        } else {
+          print("Error: Packet data incomplete. Required fields are hardware_serial, metadata, dev_id, time, frequency, data_rate, bit_rate, coding_rate, gateways");
+        }
+      } else {
+        print("Error: Unknown modulation. If FSK -> Currently not supported"); //TODO: Implement FSK
+      }
+    } else {
+      print("Error: Modulation not found -> Maybe a test packet?");
+    }
   }
 
 } else {
