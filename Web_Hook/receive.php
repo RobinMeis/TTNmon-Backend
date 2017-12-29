@@ -71,7 +71,7 @@ if (isset($headers["Authorization"])) {
           $statement = $pdo->prepare("INSERT INTO packets (`deveui`, `time`, `frequency`, `modulation`, `SF`, `BW`, `CR_k`, `CR_n`, `latitude`, `longitude`, `altitude`) VALUES (:deveui, :pkt_time, :frequency, :modulation, :SF, :BW, :CR_k, :CR_n, :latitude, :longitude, :altitude)");
           $statement->execute($mysql_data);
 
-          $packet_id = $pdo->lastInsertId():
+          $packet_id = $pdo->lastInsertId();
           foreach ($data["metadata"]["gateways"] as $gateway) {
             $mysql_data = array();
             $mysql_data['packet_id'] = $packet_id;
