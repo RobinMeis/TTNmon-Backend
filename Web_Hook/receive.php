@@ -64,11 +64,11 @@ if (isset($headers["Authorization"])) {
           $mysql_data['BW'] = $data["metadata"]["BW"];
           $mysql_data['CR_k'] = $data["metadata"]["CR_k"];
           $mysql_data['CR_n'] = $data["metadata"]["CR_n"];
-          $mysql_data['latitude'] = null;
-          /*$mysql_data['longitude'] = null;
-          $mysql_data['altitude'] = null;*/
+          $mysql_data['latitude'] = $data["metadata"]["latitude"];
+          $mysql_data['longitude'] = $data["metadata"]["longitude"];
+          $mysql_data['altitude'] = $data["metadata"]["altitude"];
 
-          $statement = $pdo->prepare("INSERT INTO packets (`deveui`, `time`, `frequency`, `modulation`, `SF`, `BW`, `CR_k`, `CR_n`, `latitude`) VALUES (:deveui, :pkt_time, :frequency, :modulation, :SF, :BW, :CR_k, :CR_n, :latitude)");
+          $statement = $pdo->prepare("INSERT INTO packets (`deveui`, `time`, `frequency`, `modulation`, `SF`, `BW`, `CR_k`, `CR_n`, `latitude`, `longitude`, `altitude`) VALUES (:deveui, :pkt_time, :frequency, :modulation, :SF, :BW, :CR_k, :CR_n, :latitude, :longitude, :altitude)");
           $statement->execute($mysql_data);
         } else {
           print("Error: Packet data incomplete. Required fields are hardware_serial, metadata, dev_id, time, frequency, data_rate, bit_rate, coding_rate, gateways");
