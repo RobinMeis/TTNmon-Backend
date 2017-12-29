@@ -75,7 +75,12 @@ if (isset($headers["Authorization"])) {
           foreach ($data["metadata"]["gateways"] as $gateway) {
             $mysql_data = array();
             $mysql_data['packet_id'] = $packet_id;
-            $statement = $pdo->prepare("INSERT INTO gateways (`packet_id`) VALUES (:packet_id)");
+            $mysql_data['gtw_id'] = $gateway["gtw_id"];
+            $mysql_data['channel'] = $gateway["channel"];
+            $mysql_data['rssi'] = $gateway["rssi"];
+            $mysql_data['snr'] = $gateway["snr"];
+            $mysql_data['rf_chain'] = $gateway["rf_chain"];
+            $statement = $pdo->prepare("INSERT INTO gateways (`packet_id`, `gtw_id`, `channel`, `rssi`, `snr`, `rf_chain`) VALUES (:packet_id, :gtw_id, :channel, :rssi, :snr, :rf_chain)");
             $statement->execute($mysql_data);
           }
         } else {
