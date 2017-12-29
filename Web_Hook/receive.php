@@ -64,7 +64,7 @@ if (isset($headers["Authorization"])) {
           $mysql_data['BW'] = $data["metadata"]["BW"];
           $mysql_data['CR_k'] = $data["metadata"]["CR_k"];
           $mysql_data['CR_n'] = $data["metadata"]["CR_n"];
-          $mysql_data['latitude'] = false;
+          $mysql_data['latitude'] = null;
           /*$mysql_data['longitude'] = null;
           $mysql_data['altitude'] = null;*/
 
