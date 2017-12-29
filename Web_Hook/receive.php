@@ -80,7 +80,19 @@ if (isset($headers["Authorization"])) {
             $mysql_data['rssi'] = $gateway["rssi"];
             $mysql_data['snr'] = $gateway["snr"];
             $mysql_data['rf_chain'] = $gateway["rf_chain"];
-            $statement = $pdo->prepare("INSERT INTO gateways (`packet_id`, `gtw_id`, `channel`, `rssi`, `snr`, `rf_chain`) VALUES (:packet_id, :gtw_id, :channel, :rssi, :snr, :rf_chain)");
+
+            if (check_array($gateway, array("latitude", "longitude")) {
+              $mysql_data["latitude"] = $gateway["latitude"];
+              $mysql_data["longitude"] = $gateway["longitude"];
+            } else {
+              $mysql_data["latitude"] = null;
+              $mysql_data["longitude"] = null;
+            }
+
+            if (isset($gateway["altitude"])) $mysql_data["altitude"] = $gateway["altitude"];
+            else $gateway["altitude"] = null;
+
+            $statement = $pdo->prepare("INSERT INTO gateways (`packet_id`, `gtw_id`, `channel`, `rssi`, `snr`, `rf_chain`, `latitude`, `longitude`, `altitude`) VALUES (:packet_id, :gtw_id, :channel, :rssi, :snr, :rf_chain, :latitude, :longitude, :altitude)");
             $statement->execute($mysql_data);
           }
         } else {
