@@ -70,6 +70,14 @@ if (isset($headers["Authorization"])) {
 
           $statement = $pdo->prepare("INSERT INTO packets (`deveui`, `time`, `frequency`, `modulation`, `SF`, `BW`, `CR_k`, `CR_n`, `latitude`, `longitude`, `altitude`) VALUES (:deveui, :pkt_time, :frequency, :modulation, :SF, :BW, :CR_k, :CR_n, :latitude, :longitude, :altitude)");
           $statement->execute($mysql_data);
+
+          $packet_id = $pdo->lastInsertId():
+          foreach ($data["metadata"]["gateways"] as $gateway) {
+            $mysql_data = array();
+            $mysql_data['packet_id'] = $packet_id;
+            $statement = $pdo->prepare("INSERT INTO gateways (`packet_id`) VALUES (:packet_id)");
+            $statement->execute($mysql_data);
+          }
         } else {
           print("Error: Packet data incomplete. Required fields are hardware_serial, metadata, dev_id, time, frequency, data_rate, bit_rate, coding_rate, gateways");
         }
