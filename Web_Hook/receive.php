@@ -17,7 +17,7 @@ if (isset($headers["Authorization"])) {
     $authorization_id = $authorization_id["id"];
     $data = file_get_contents('php://input');
 
-    file_put_contents("log.json", json_encode($_POST));
+    file_put_contents("log.json", $data);
 
     $fields_root = array("hardware_serial", "is_retry", "metadata", "gateways"); //Check for required fieds in POST
     $fields_metadata = array("time", "frequency", "modulation", "data_rate", "bit_rate", "coding_rate", "latitude", "longitude", "altitude");
