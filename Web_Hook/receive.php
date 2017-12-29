@@ -50,7 +50,7 @@ if (isset($headers["Authorization"])) {
 
           $mysql_data = array();
           $mysql_data['deveui'] = hex2bin($data["hardware_serial"]);
-          $mysql_data['time'] = null;
+          /*$mysql_data['time'] = null;
           $mysql_data['frequency'] = null;
           $mysql_data['modulation'] = "LORA";
           $mysql_data['SF'] = null;
@@ -58,7 +58,7 @@ if (isset($headers["Authorization"])) {
           $mysql_data['CR'] = null;
           $mysql_data['latitude'] = null;
           $mysql_data['longitude'] = null;
-          $mysql_data['altitude'] = null;
+          $mysql_data['altitude'] = null;*/
 
           $statement = $pdo->prepare("INSERT INTO packets (`deveui`) VALUES (:deveui)");
           $statement->execute($mysql_data);
