@@ -50,7 +50,7 @@ if (isset($headers["Authorization"])) {
 
           $mysql_data = array();
           $mysql_data['deveui'] = hex2bin($data["hardware_serial"]);
-          /*$mysql_data['time'] = null;
+          $mysql_data['time'] = null;
           $mysql_data['frequency'] = null;
           $mysql_data['modulation'] = "LORA";
           $mysql_data['SF'] = null;
@@ -58,9 +58,9 @@ if (isset($headers["Authorization"])) {
           $mysql_data['CR'] = null;
           $mysql_data['latitude'] = null;
           $mysql_data['longitude'] = null;
-          $mysql_data['altitude'] = null;*/
+          $mysql_data['altitude'] = null;
 
-          $statement = $pdo->prepare("INSERT INTO packets (`deveui`) VALUES (:deveui)");
+          $statement = $pdo->prepare("INSERT INTO packets (`deveui`, `time`, `frequency`, `modulation`, `SF`, `BW`, `CR`, `latitude`, `longitude`, `altitude`) VALUES (:deveui, :time, :frequency, :modulation, :SF, :BW, :CR, :latitude, :longitude, :altitude)");
           $statement->execute($mysql_data);
         } else {
           print("Error: Packet data incomplete. Required fields are hardware_serial, metadata, dev_id, time, frequency, data_rate, bit_rate, coding_rate, gateways");
