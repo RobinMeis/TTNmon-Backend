@@ -36,7 +36,7 @@ if (isset($headers["Authorization"])) {
             }
           }
           //Finally we can assume, that we have all required data and continue with data storage
-          file_put_contents("log.json", $data); //Log last request
+          file_put_contents("log.json", json_encode($data)); //Log last request
 
           if (!isset($data["metadata"]["latitude"]) or !isset($data["metadata"]["longitude"])) { //node lat, lon not available
             $data["metadata"]["latitude"] = null;
