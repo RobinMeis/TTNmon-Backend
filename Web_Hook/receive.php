@@ -89,7 +89,7 @@ if (isset($headers["Authorization"])) {
               $mysql_data["longitude"] = null;
             }
 
-            if (isset($gateway["altitude"]) and $gateway["altitude"] != "null") $mysql_data["altitude"] = $mysql_data["altitude"];
+            if (isset($gateway["altitude"]) && $gateway["altitude"] != "null") $mysql_data["altitude"] = $mysql_data["altitude"];
             else $mysql_data["altitude"] = null;
 
             $statement = $pdo->prepare("INSERT INTO gateways (`packet_id`, `gtw_id`, `channel`, `rssi`, `snr`, `rf_chain`, `latitude`, `longitude`, `altitude`) VALUES (:packet_id, :gtw_id, :channel, :rssi, :snr, :rf_chain, :latitude, :longitude, :altitude)");
