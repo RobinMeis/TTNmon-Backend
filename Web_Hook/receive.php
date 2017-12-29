@@ -16,7 +16,7 @@ if (isset($headers["Authorization"])) {
     print("Authorization not found");
   } else { //Auth success
     $authorization_id = $authorization_id["id"];
-    $data = json_decode(file_get_contents('php://input')); //Get request body
+    $data = json_decode(file_get_contents('php://input'), true); //Get request body
 
     if (isset($data["metadata"]["modulation"])) {
       if ($data["metadata"]["modulation"] == "LORA") {
