@@ -48,7 +48,20 @@ if (isset($headers["Authorization"])) {
           //After preparing data, we can finally store it
           file_put_contents("log.json", json_encode($data)); //Log last request
 
+          $data = array();
+          $data['deveui'] = hex2bin($data["hardware_serial"]);
+          $data['time'] = null;
+          $data['frequency'] = null;
+          $data['modulation'] = "LORA";
+          $data['SF'] = null;
+          $data['BW'] = null;
+          $data['CR'] = null;
+          $data['latitude'] = null;
+          $data['longitude'] = null;
+          $data['altitude'] = null;
 
+          $statement = $pdo->prepare("INSERT INTO packets (`deveui`) VALUES (:deveui)");
+          $statement->execute($data);
         } else {
           print("Error: Packet data incomplete. Required fields are hardware_serial, metadata, dev_id, time, frequency, data_rate, bit_rate, coding_rate, gateways");
         }
