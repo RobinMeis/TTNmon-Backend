@@ -81,7 +81,7 @@ if (isset($headers["Authorization"])) {
             $mysql_data['snr'] = $gateway["snr"];
             $mysql_data['rf_chain'] = $gateway["rf_chain"];
 
-            if (check_array($gateway, array("latitude", "longitude")) {
+            if (check_array($gateway, array("latitude", "longitude"))) {
               $mysql_data["latitude"] = $gateway["latitude"];
               $mysql_data["longitude"] = $gateway["longitude"];
             } else {
