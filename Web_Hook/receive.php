@@ -13,10 +13,24 @@ if (isset($headers["Authorization"])) {
   $authorization_id = $check_auth->fetch();
 
   if (!isset($authorization_id["id"])) { //Auth error
-    print("Authorization not found");
+    print("Error: Authorization not found");
   } else { //Auth success
     $authorization_id = $authorization_id["id"];
     $data = json_decode(file_get_contents('php://input'), true); //Get request body
+
+    if (isset($data["hardware_serial"])) { //Check if device belongs to authorization
+      $check_auth = $pdo->prepare("SELECT id FROM devices WHERE authorization_id = ? and deveui = ? LIMIT 1"); //Check authorization
+      $check_auth->execute(array($authorization_id, hex2bin($data["hardware_serial"])));
+      $device_id = $check_auth->fetch();
+
+      if (!isset($device_id["id"])) { //Device ID does not belong to Authorization token
+        print("Error: Device ID (Hardware Serial) does not belong to your authorization token");
+        exit();
+      }
+    } else {
+      print("Error: hardware_serial missing");
+      exit();
+    }
 
     if (isset($data["metadata"]["modulation"])) {
       if ($data["metadata"]["modulation"] == "LORA") {
