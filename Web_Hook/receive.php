@@ -92,9 +92,13 @@ if (isset($headers["Authorization"])) {
             if (isset($gateway["altitude"]) && $gateway["altitude"] != "null") $mysql_data["altitude"] = $gateway["altitude"];
             else $mysql_data["altitude"] = null;
 
-            $statement = $pdo->prepare("INSERT INTO gateways (`packet_id`, `gtw_id`, `channel`, `rssi`, `snr`, `rf_chain`, `latitude`, `longitude`, `altitude`) VALUES (:packet_id, :gtw_id, :channel, :rssi, :snr, :rf_chain, :latitude, :longitude, :altitude)");
+            if (isset($gateway["time"]) && $gateway["time"] != "null") $mysql_data["time"] = $gateway["time"];
+            else $mysql_data["time"] = null;
+
+            $statement = $pdo->prepare("INSERT INTO gateways (`packet_id`, `gtw_id`, `channel`, `rssi`, `snr`, `rf_chain`, `latitude`, `longitude`, `altitude`, `time`) VALUES (:packet_id, :gtw_id, :channel, :rssi, :snr, :rf_chain, :latitude, :longitude, :altitude, :time)");
             $statement->execute($mysql_data);
           }
+          print("OK");
         } else {
           print("Error: Packet data incomplete. Required fields are hardware_serial, metadata, dev_id, time, frequency, data_rate, bit_rate, coding_rate, gateways");
         }
