@@ -6,7 +6,7 @@ $headers = getallheaders();
 if (isset($headers["Authorization"])) {
   $authorization = $headers["Authorization"];
 
-  $pdo = new PDO('mysql:host=localhost;dbname=smrtnoob_ttnmon', $MYSQL_USER, $MYSQL_PASSWD);
+  $pdo = new PDO('mysql:host='.$MYSQL_SERVER.';dbname='.$MYSQL_DB, $MYSQL_USER, $MYSQL_PASSWD);
 
   $check_auth = $pdo->prepare("SELECT id FROM authorizations WHERE authorization = ? LIMIT 1"); //Check authorization
   $check_auth->execute(array($authorization));
