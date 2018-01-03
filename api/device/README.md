@@ -43,6 +43,9 @@ Incomplete input
 #### Error code 3
 The device (deveui) is already registered with (another) auth_token. It has to be removed before it can be registered agiain
 
+#### Error code 4
+The deveui is invalid (Hex string length is not 16 chars) or hex2bin can't convert the hex string to binary.
+
 ## Method DELETE
 Removes an device from an authentication token
 
