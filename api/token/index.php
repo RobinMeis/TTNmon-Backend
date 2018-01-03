@@ -32,7 +32,33 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") { //Create new token
 
   $msg["error"] = 0;
 } else if ($_SERVER['REQUEST_METHOD'] == "DELETE") {
-  $msg["error"] = 0;
+  if (isset($_GET["auth_token"])) {
+    $pdo = new PDO('mysql:host='.$MYSQL_SERVER.';dbname='.$MYSQL_DB, $MYSQL_USER, $MYSQL_PASSWD);
+    $mysql_data = array();
+    $mysql_data["authorization"] = $_GET["auth_token"];
+    $statement = $pdo->prepare("SELECT id FROM authorizations WHERE authorization = :authorization"); //Fetch ID
+    $statement->execute($mysql_data);
+    $authorization_id = $statement->fetch();
+
+    if (empty($authorization_id)) { //Auth token not found
+      $msg["error"] = 1;
+      $msg["msg_en"] = "The auth token could not be found";
+    } else { //Delete authorization and its devices
+      $statement = $pdo->prepare("DELETE FROM authorizations WHERE authorization = :authorization"); //Delete Auth Token
+      $statement->execute($mysql_data);
+
+      $mysql_data = array(); //Delete the tokens devices
+      $mysql_data["authorization_id"] = $authorization_id["id"];
+      $statement = $pdo->prepare("DELETE FROM devices WHERE authorization_id = :authorization_id");
+      $statement->execute($mysql_data);
+
+      $msg["error"] = 0;
+      $msg["msg_en"] = "The auth token and its devices have been successfully deleted";
+    }
+  } else { //Missing parameters
+    $msg["error"] = 2;
+    $msg["msg_en"] = "Invalid request. At least one parameter is missing";
+  }
 } else {
   $msg["error"] = -1;
   $msg["msg_en"] = "Error: Unsupported method";
