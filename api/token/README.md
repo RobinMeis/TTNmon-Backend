@@ -26,7 +26,7 @@ Deletes a token and all devices belonging to it
 JSON encoded. Always returns a field `error_code` and `msg_en`.
 
 #### Error code 0
-The auth token and its devices have been deleted successfully
+The auth token and its devices have been successfully deleted
 
 #### Error code 1
 The auth token could not be found
