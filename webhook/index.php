@@ -59,8 +59,6 @@ if (isset($headers["Authorization"])) {
           $data["metadata"]["altitude"] = null;
 
         //After preparing data, we can finally store it
-        file_put_contents("log.json", json_encode($data)); //Log last request
-
         $mysql_data = array();
         $mysql_data['deveui'] = hex2bin($data["hardware_serial"]);
         $mysql_data['pkt_time'] = $data["metadata"]["time"];
