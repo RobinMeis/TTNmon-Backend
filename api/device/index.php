@@ -56,10 +56,21 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") { //get registered devices
     $msg["msg_en"] = "Invalid request. At least one parameter is missing";
   }
 } else if ($_SERVER['REQUEST_METHOD'] == "DELETE") {
-  if (isset($_GET["auth_token"])) { //All required parameters were specified
+  if (isset($_GET["auth_token"]) && isset($_GET["deveui"])) { //All required parameters were specified
+    $pdo = new PDO('mysql:host='.$MYSQL_SERVER.';dbname='.$MYSQL_DB, $MYSQL_USER, $MYSQL_PASSWD);
 
+    $statement = $pdo->prepare("DELETE FROM devices WHERE authorization = ? and deveui = ?"); //Try to remove device with current authorization
+    $statement->execute(array($_GET["auth_token"], hex2bin($_GET["deveui"])));
+
+    if ($statement->rowCount() == 0) { //Device was not deleted
+      $msg["error"] = 1;
+      $msg["msg_en"] = "The device was not deleted because it does either not exist or does not belong to you";
+    } else { //Device was deleted
+      $msg["error"] = 0;
+      $msg["msg_en"] = "The device was successfully deleted";
+    }
   } else { //Parameters missing
-    $msg["error"] = 3;
+    $msg["error"] = 2;
     $msg["msg_en"] = "Invalid request. At least one parameter is missing";
   }
 } else {
