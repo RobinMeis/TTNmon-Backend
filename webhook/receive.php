@@ -1,5 +1,5 @@
 <?php
-require_once("config.php");
+require_once("../config.php");
 require_once("check_array.inc.php");
 
 $headers = getallheaders();

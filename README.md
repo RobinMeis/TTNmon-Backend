@@ -5,10 +5,8 @@ Monitoring of TTN nodes
 - PHP
 - MySQL
 
-## How does it work?
-You have to upload the Web_Hook to a public web server. The file receive.php has to be called by the TTN HTTP integration. After configuration you will be able to store your data.
-
 ## Setup
+0. Upload backend to public web server
 1. Create new database
 2. Restore the database structure from Database/
 3. Copy config-example.php to config.php
@@ -20,3 +18,6 @@ To prevent third parties to send spoofed data, there is an authentication mechan
 1. The Authentication header is checked
 2. If valid the device serial is checked
 3. Only if the device serial is registered to the users key, the data accepted
+
+## Directories
+- webhook/ Contains the webhook for the TTN HTTP integration
