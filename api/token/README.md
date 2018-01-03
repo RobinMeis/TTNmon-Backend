@@ -19,7 +19,7 @@ There occured an error while generating the code. No auth token is returned
 ## Method DELETE
 Deletes a token and all devices belonging to it
 
-### Parameters
+### URL Parameters
 `auth_token` The auth token to delete
 
 ### Returns
@@ -30,3 +30,6 @@ The auth token and its devices have been deleted successfully
 
 #### Error code 1
 The auth token could not be found
+
+#### Error code 2
+Invalid request. At least one parameter is missing
