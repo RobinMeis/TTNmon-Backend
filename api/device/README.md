@@ -18,6 +18,9 @@ Example: TODO
 #### Error code 1
 The authentication token could not be found. No devices are returned
 
+#### Error code 2
+Incomplete input
+
 ## Method POST
 Adds a device to an authentication token
 
