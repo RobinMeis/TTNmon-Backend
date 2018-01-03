@@ -11,11 +11,10 @@ if (isset($headers["Authorization"])) {
   $data = json_decode(file_get_contents('php://input'), true); //Get request body
 
   if (isset($data["hardware_serial"])) {
-    $check_auth = $pdo->prepare("SELECT id FROM devices WHERE authorization = ? and deveui = ? LIMIT 1"); //Check authorization
+    $check_auth = $pdo->prepare("SELECT created FROM devices WHERE authorization = ? and deveui = ? LIMIT 1"); //Check authorization
     $check_auth->execute(array($authorization, hex2bin($data["hardware_serial"])));
     $device_id = $check_auth->fetch();
-
-    if (!isset($device_id["id"])) { //Device ID does not belong to Authorization token
+    if (empty($device_id)) { //Device ID does not belong to Authorization token
       print("Error: The authorization token is invalid or device ID (Hardware Serial) does not belong to your authorization token");
       exit();
     }
@@ -59,6 +58,8 @@ if (isset($headers["Authorization"])) {
           $data["metadata"]["altitude"] = null;
 
         //After preparing data, we can finally store it
+        file_put_contents("log.json", json_encode($data)); //Log last request
+
         $mysql_data = array();
         $mysql_data['deveui'] = hex2bin($data["hardware_serial"]);
         $mysql_data['pkt_time'] = $data["metadata"]["time"];

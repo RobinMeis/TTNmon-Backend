@@ -7,7 +7,7 @@ The table authorizations contains the authorization tokens with a maximum length
 ## Table devices
 The table devices contains the hardware serials of the devices associated to an authorization token.
 - The row authorization contains the authorization token from the table authorizations.
-- The row deveui contains the hardware serial provived by TTN. It is possible to register multiple hardware serials for a single authorization token.
+- The row deveui contains the hardware serial provived by TTN. It is possible to register multiple hardware serials for a single authorization token. deveui is unique and is used as index
 
 ## Table packets
 The table packets contains all packets received.

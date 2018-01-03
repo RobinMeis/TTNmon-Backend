@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jan 03, 2018 at 10:34 PM
+-- Generation Time: Jan 03, 2018 at 11:52 PM
 -- Server version: 5.1.73-log
 -- PHP Version: 5.6.32
 
@@ -40,13 +40,11 @@ CREATE TABLE IF NOT EXISTS `authorizations` (
 --
 
 CREATE TABLE IF NOT EXISTS `devices` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
   `authorization` char(20) COLLATE utf8_unicode_ci NOT NULL,
   `deveui` binary(8) NOT NULL,
   `created` datetime NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `deveui` (`deveui`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=10 ;
+  UNIQUE KEY `deveui` (`deveui`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -68,7 +66,7 @@ CREATE TABLE IF NOT EXISTS `gateways` (
   `time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `packet_id` (`packet_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1398 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1458 ;
 
 -- --------------------------------------------------------
 
@@ -90,7 +88,7 @@ CREATE TABLE IF NOT EXISTS `packets` (
   `longitude` double DEFAULT NULL,
   `altitude` double DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1398 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1455 ;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
