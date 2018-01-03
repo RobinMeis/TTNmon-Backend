@@ -60,10 +60,7 @@ JSON encoded. Always returns a field `error_code` and `msg_en`.
 The device was removed successfully
 
 #### Error code 1
-The auth_token was not found. Device was not removed
-
-#### Error code 2
 The device was not found or does not belong to this auth token
 
-#### Error code 3
+#### Error code 2
 Incomplete input
