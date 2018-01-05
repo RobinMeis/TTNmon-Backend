@@ -13,10 +13,22 @@ if (isset($headers["Authorization"])) {
   if (isset($data["hardware_serial"])) {
     $check_auth = $pdo->prepare("SELECT created FROM devices WHERE authorization = ? and deveui = ? LIMIT 1"); //Check authorization
     $check_auth->execute(array($authorization, hex2bin($data["hardware_serial"])));
-    $device_id = $check_auth->fetch();
-    if (empty($device_id)) { //Device ID does not belong to Authorization token
-      print("Error: The authorization token is invalid or device ID (Hardware Serial) does not belong to your authorization token");
-      exit();
+    if (empty($check_auth->fetch())) { //Device ID does not belong to Authorization token
+      if ($AUTO_ADOPTION == FALSE) { //Don't try to adopt device, if auto adoption is disabled
+        print("Error: The authorization token is invalid or device ID (Hardware Serial) does not belong to your authorization token");
+        exit();
+      } else { //Try to adopt device
+        $statement = $pdo->prepare("SELECT deveui FROM devices WHERE deveui = ?"); //Check if device is already registered
+        $statement->execute(array(hex2bin($data["hardware_serial"])));
+        if (!empty($statement->fetch())) { //Device already registered
+          print("Error: The device belongs to another authorization");
+          exit();
+        } else { //Register device
+          $statement = $pdo->prepare("INSERT INTO devices (authorization, deveui, created) VALUES (?, ?, UTC_TIMESTAMP())"); //Register device
+          $statement->execute(array($authorization, hex2bin($data["hardware_serial"])));
+          print("Notice: The device was auto adopted");
+        }
+      }
     }
   } else {
     print("Error: hardware_serial missing");
