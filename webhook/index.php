@@ -11,7 +11,7 @@ if (isset($headers["Authorization"])) {
   $data = json_decode(file_get_contents('php://input'), true); //Get request body
 
   if (isset($data["hardware_serial"])) {
-    $check_auth = $pdo->prepare("SELECT created FROM devices WHERE authorization = ? and deveui = ? LIMIT 1"); //Check authorization
+    $check_auth = $pdo->prepare("SELECT created FROM devices WHERE authorization = ? and deveui = ?"); //Check authorization
     $check_auth->execute(array($authorization, hex2bin($data["hardware_serial"])));
     if (empty($check_auth->fetch())) { //Device ID does not belong to Authorization token
       if ($AUTO_ADOPTION == FALSE) { //Don't try to adopt device, if auto adoption is disabled
@@ -24,12 +24,19 @@ if (isset($headers["Authorization"])) {
           print("Error: The device belongs to another authorization");
           exit();
         } else { //Register device
-          $comment = "auto adopted";
-          if (isset($data["dev_id"])) $comment = $comment . ": " . $data["dev_id"];
+          $check_auth = $pdo->prepare("SELECT created FROM authorizations WHERE authorization = ?"); //Check authorization
+          $check_auth->execute(array($authorization));
+          if (empty($check_auth->fetch())) { //Authorization invalid
+            print("Error: The authorization token is invalid");
+            exit();
+          } else { //Authorization valid
+            $comment = "auto adopted";
+            if (isset($data["dev_id"])) $comment = $comment . ": " . $data["dev_id"];
 
-          $statement = $pdo->prepare("INSERT INTO devices (authorization, deveui, comment, created) VALUES (?, ?, ?, UTC_TIMESTAMP())"); //Register device
-          $statement->execute(array($authorization, hex2bin($data["hardware_serial"]), $comment));
-          print("Notice: The device was auto adopted");
+            $statement = $pdo->prepare("INSERT INTO devices (authorization, deveui, comment, created) VALUES (?, ?, ?, UTC_TIMESTAMP())"); //Register device
+            $statement->execute(array($authorization, hex2bin($data["hardware_serial"]), $comment));
+            print("Notice: The device was auto adopted");
+          }
         }
       }
     }
