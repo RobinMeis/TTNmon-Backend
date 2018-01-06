@@ -31,6 +31,41 @@ if (isset($headers["Authorization"])) {
             exit();
           } else { //Authorization valid
             $comment = "auto adopted";
+
+            if ($ADOPTION_PROOF == TRUE) {
+              if (isset($data["downlink_url"]) && isset($data["app_id"]) && isset($data["dev_id"])) {
+                $url = parse_url ($data["downlink_url"]);
+                parse_str($url["query"], $url);
+                if (isset($url["key"])) {
+                  $ch = curl_init("http://eu.thethings.network:8084/applications/".$data["app_id"]."/devices/".$data["dev_id"]);
+                  curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                  curl_setopt($ch, CURLOPT_HTTPHEADER, array("Authorization: Key ".$url["key"]));
+                  $device = curl_exec($ch);
+                  curl_close($ch);
+
+                  $device = json_decode($device, true);
+                  if (isset($device["lorawan_device"]["dev_eui"])) {
+                    if ($device["lorawan_device"]["dev_eui"] == $data["hardware_serial"]) {
+                      print("Notice: Adoption proof successful");
+                      $comment .= ", proofed";
+                    } else {
+                      print("Error: Adoption proof failed. Try to hack something else!");
+                      exit();
+                    }
+                  } else {
+                    print("Error: Invalid response from TTN. Device was not adopted!");
+                    exit();
+                  }
+                } else {
+                  print("Error: Auto adoption failed because of missing key in downlink_url");
+                  exit();
+                }
+              } else {
+                  print("Error: Auto adoption failed because of missing data");
+                  exit();
+              }
+            }
+
             if (isset($data["dev_id"])) $comment = $comment . ": " . $data["dev_id"];
 
             $statement = $pdo->prepare("INSERT INTO devices (authorization, deveui, comment, created) VALUES (?, ?, ?, UTC_TIMESTAMP())"); //Register device
