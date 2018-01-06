@@ -46,6 +46,9 @@ The device (deveui) is already registered with (another) auth_token. It has to b
 #### Error code 4
 The deveui is invalid (Hex string length is not 16 chars) or hex2bin can't convert the hex string to binary.
 
+#### Error code 5
+Manual device registration was disabled for security reasons. Your device will be adopted automatically when we receive the first message.
+
 ## Method DELETE
 Removes an device from an authentication token
 
