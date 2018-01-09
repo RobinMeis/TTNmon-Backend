@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jan 04, 2018 at 06:31 PM
+-- Generation Time: Jan 09, 2018 at 09:53 PM
 -- Server version: 5.1.73-log
 -- PHP Version: 5.6.32
 
@@ -42,10 +42,12 @@ CREATE TABLE IF NOT EXISTS `authorizations` (
 CREATE TABLE IF NOT EXISTS `devices` (
   `authorization` char(20) COLLATE utf8_unicode_ci NOT NULL,
   `deveui` binary(8) NOT NULL,
+  `pseudonym` int(11) NOT NULL AUTO_INCREMENT,
   `created` datetime NOT NULL,
   `comment` text COLLATE utf8_unicode_ci,
+  PRIMARY KEY (`pseudonym`),
   UNIQUE KEY `deveui` (`deveui`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=6 ;
 
 -- --------------------------------------------------------
 
@@ -67,7 +69,7 @@ CREATE TABLE IF NOT EXISTS `gateways` (
   `time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `packet_id` (`packet_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=7 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=6339 ;
 
 -- --------------------------------------------------------
 
@@ -77,7 +79,7 @@ CREATE TABLE IF NOT EXISTS `gateways` (
 
 CREATE TABLE IF NOT EXISTS `packets` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `deveui` binary(8) NOT NULL,
+  `dev_pseudonym` int(11) NOT NULL,
   `time` datetime NOT NULL,
   `frequency` double NOT NULL,
   `modulation` enum('LORA','FSK') COLLATE utf8_unicode_ci NOT NULL,
@@ -88,8 +90,9 @@ CREATE TABLE IF NOT EXISTS `packets` (
   `latitude` double DEFAULT NULL,
   `longitude` double DEFAULT NULL,
   `altitude` double DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=7 ;
+  PRIMARY KEY (`id`),
+  KEY `dev_pseudonym` (`dev_pseudonym`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=6260 ;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

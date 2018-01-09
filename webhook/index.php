@@ -11,9 +11,10 @@ if (isset($headers["Authorization"])) {
   $data = json_decode(file_get_contents('php://input'), true); //Get request body
 
   if (isset($data["hardware_serial"])) {
-    $check_auth = $pdo->prepare("SELECT created FROM devices WHERE authorization = ? and deveui = ?"); //Check authorization
+    $check_auth = $pdo->prepare("SELECT pseudonym FROM devices WHERE authorization = ? and deveui = ?"); //Check authorization
     $check_auth->execute(array($authorization, hex2bin($data["hardware_serial"])));
-    if (empty($check_auth->fetch())) { //Device ID does not belong to Authorization token
+    $pseudonym = $check_auth->fetch();
+    if (empty($pseudonym)) { //Device ID does not belong to Authorization token
       if ($AUTO_ADOPTION == FALSE) { //Don't try to adopt device, if auto adoption is disabled
         print("Error: The authorization token is invalid or device ID (Hardware Serial) does not belong to your authorization token");
         exit();
@@ -114,11 +115,12 @@ if (isset($headers["Authorization"])) {
         if (!isset($data["metadata"]["altitude"])) //node altitude not available
           $data["metadata"]["altitude"] = null;
 
-        //After preparing data, we can finally store it
-        file_put_contents("log.json", json_encode($data)); //Log last request
+        if ($LOG_WEBHOOK == TRUE)
+          file_put_contents("log.json", json_encode($data)); //Log last request if enabled
 
+        //After preparing data, we can finally store it
         $mysql_data = array();
-        $mysql_data['deveui'] = hex2bin($data["hardware_serial"]);
+        $mysql_data['dev_pseudonym'] = $pseudonym["pseudonym"];
         $mysql_data['pkt_time'] = $data["metadata"]["time"];
         $mysql_data['frequency'] = $data["metadata"]["frequency"];
         $mysql_data['modulation'] = "LORA";
@@ -130,9 +132,8 @@ if (isset($headers["Authorization"])) {
         $mysql_data['longitude'] = $data["metadata"]["longitude"];
         $mysql_data['altitude'] = $data["metadata"]["altitude"];
 
-        $statement = $pdo->prepare("INSERT INTO packets (`deveui`, `time`, `frequency`, `modulation`, `SF`, `BW`, `CR_k`, `CR_n`, `latitude`, `longitude`, `altitude`) VALUES (:deveui, :pkt_time, :frequency, :modulation, :SF, :BW, :CR_k, :CR_n, :latitude, :longitude, :altitude)");
+        $statement = $pdo->prepare("INSERT INTO packets (`dev_pseudonym`, `time`, `frequency`, `modulation`, `SF`, `BW`, `CR_k`, `CR_n`, `latitude`, `longitude`, `altitude`) VALUES (:dev_pseudonym, :pkt_time, :frequency, :modulation, :SF, :BW, :CR_k, :CR_n, :latitude, :longitude, :altitude)");
         $statement->execute($mysql_data);
-
         $packet_id = $pdo->lastInsertId();
         foreach ($data["metadata"]["gateways"] as $gateway) {
           $mysql_data = array();
