@@ -1,5 +1,8 @@
 <?php
 require_once("../../config.php");
+
+header("Access-Control-Allow-Origin: *");
+
 $msg = array();
 if ($_SERVER['REQUEST_METHOD'] == "GET") { //get registered devices
   if (isset($_GET["auth_token"])) { //All required parameters were specified
