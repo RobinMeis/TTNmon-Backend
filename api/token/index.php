@@ -1,5 +1,6 @@
 <?php
 require_once("../../config.php");
+header("Access-Control-Allow-Origin: *");
 
 function random_str($length, $keyspace = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ') {
     $str = '';
