@@ -83,7 +83,7 @@ if (isset($headers["Authorization"])) {
 
   if (isset($data["metadata"]["modulation"])) {
     if ($data["metadata"]["modulation"] == "LORA") {
-      if (check_array($data, array("hardware_serial", "metadata", "dev_id")) && check_array($data["metadata"], array("time", "frequency", "data_rate", "coding_rate", "gateways"))) { //Check packet data for required fields
+      if (check_array($data, array("hardware_serial", "metadata", "dev_id", "counter")) && check_array($data["metadata"], array("time", "frequency", "data_rate", "coding_rate", "gateways"))) { //Check packet data for required fields
         foreach ($data["metadata"]["gateways"] as $key=>$gateway) { //Check if all required fields for gateway were transmitted
           if (!isset($gateway["latitude"]) or !isset($gateway["longitude"])) { //gateway lat, lon not available
             $data["metadata"]["gateways"][$key]["latitude"] = null;
@@ -121,6 +121,7 @@ if (isset($headers["Authorization"])) {
         //After preparing data, we can finally store it
         $mysql_data = array();
         $mysql_data['dev_pseudonym'] = $pseudonym["pseudonym"];
+        $mysql_data['packet_count'] = $data["counter"];
         $mysql_data['pkt_time'] = $data["metadata"]["time"];
         $mysql_data['frequency'] = $data["metadata"]["frequency"];
         $mysql_data['modulation'] = "LORA";
@@ -132,7 +133,7 @@ if (isset($headers["Authorization"])) {
         $mysql_data['longitude'] = $data["metadata"]["longitude"];
         $mysql_data['altitude'] = $data["metadata"]["altitude"];
 
-        $statement = $pdo->prepare("INSERT INTO packets (`dev_pseudonym`, `time`, `frequency`, `modulation`, `SF`, `BW`, `CR_k`, `CR_n`, `latitude`, `longitude`, `altitude`) VALUES (:dev_pseudonym, :pkt_time, :frequency, :modulation, :SF, :BW, :CR_k, :CR_n, :latitude, :longitude, :altitude)");
+        $statement = $pdo->prepare("INSERT INTO packets (`dev_pseudonym`, `packet_count`, `time`, `frequency`, `modulation`, `SF`, `BW`, `CR_k`, `CR_n`, `latitude`, `longitude`, `altitude`) VALUES (:dev_pseudonym, :packet_count, :pkt_time, :frequency, :modulation, :SF, :BW, :CR_k, :CR_n, :latitude, :longitude, :altitude)");
         $statement->execute($mysql_data);
         $packet_id = $pdo->lastInsertId();
         foreach ($data["metadata"]["gateways"] as $gateway) {
@@ -163,7 +164,7 @@ if (isset($headers["Authorization"])) {
         }
         print("OK");
       } else {
-        print("Error: Packet data incomplete. Required fields are hardware_serial, metadata, dev_id, time, frequency, data_rate, bit_rate, coding_rate, gateways");
+        print("Error: Packet data incomplete. Required fields are hardware_serial, counter, metadata, dev_id, time, frequency, data_rate, bit_rate, coding_rate, gateways");
       }
     } else {
       print("Error: Unknown modulation. If FSK -> Currently not supported"); //TODO: Implement FSK
@@ -174,16 +175,4 @@ if (isset($headers["Authorization"])) {
 } else {
   print("Error: Authorization Header missing");
 }
-
-exit();
-
-
-$pdo = new PDO('mysql:host=localhost;dbname=smrtnoob_ttnmon', $MYSQL_USER, $MYSQL_PASSWD);
-
-$data = array();
-$data['key'] = json_encode(getallheaders());
-
-$statement = $pdo->prepare("INSERT INTO applications (`key`) VALUES (:key)");
-$statement->execute($data);
-
 ?>
