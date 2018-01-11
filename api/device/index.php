@@ -15,13 +15,14 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") { //get registered devices
       $msg["msg_en"] = "Invalid authorization token";
     } else { //Auth OK
       $msg["devices"] = array();
-      $statement = $pdo->prepare("SELECT deveui, pseudonym FROM devices WHERE authorization = ?");
+      $statement = $pdo->prepare("SELECT deveui, pseudonym, created FROM devices WHERE authorization = ?");
       $statement->execute(array($_GET["auth_token"]));
 
       $n = 0;
       while ($device = $statement->fetch()) {
-        $msg["devices"][$n]["deveui"] = bin2hex($device["deveui"]);
         $msg["devices"][$n]["pseudonym"] = $device["pseudonym"];
+        $msg["devices"][$n]["deveui"] = bin2hex($device["deveui"]);
+        $msg["devices"][$n]["created"] = $device["created"];
         $n++;
       }
 
