@@ -2,6 +2,7 @@
 require_once("../../config.php");
 
 header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: GET, POST, DELETE");
 
 $msg = array();
 if ($_SERVER['REQUEST_METHOD'] == "GET") { //get registered devices
