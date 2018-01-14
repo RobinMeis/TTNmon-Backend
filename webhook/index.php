@@ -69,8 +69,8 @@ if (isset($headers["Authorization"])) {
 
             if (isset($data["dev_id"])) $comment = $comment . ": " . $data["dev_id"];
 
-            $statement = $pdo->prepare("INSERT INTO devices (authorization, deveui, comment, created) VALUES (?, ?, ?, UTC_TIMESTAMP())"); //Register device
-            $statement->execute(array($authorization, hex2bin($data["hardware_serial"]), $comment));
+            $statement = $pdo->prepare("INSERT INTO devices (authorization, deveui, app_id, dev_id, comment, created) VALUES (?, ?, ?, ?, ?, UTC_TIMESTAMP())"); //Register device
+            $statement->execute(array($authorization, hex2bin($data["hardware_serial"]), $data["app_id"], $data["dev_id"], $comment));
             print("Notice: The device was auto adopted");
           }
         }

@@ -1,6 +1,7 @@
 <?php
 require_once("../../config.php");
 
+header('Content-Type: application/json');
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET, POST, DELETE");
 
@@ -16,13 +17,15 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") { //get registered devices
       $msg["msg_en"] = "Invalid authorization token";
     } else { //Auth OK
       $msg["devices"] = array();
-      $statement = $pdo->prepare("SELECT deveui, pseudonym, created FROM devices WHERE authorization = ?");
+      $statement = $pdo->prepare("SELECT deveui, app_id, dev_id, pseudonym, created FROM devices WHERE authorization = ?");
       $statement->execute(array($_GET["auth_token"]));
 
       $n = 0;
       while ($device = $statement->fetch()) {
         $msg["devices"][$n]["pseudonym"] = $device["pseudonym"];
         $msg["devices"][$n]["deveui"] = bin2hex($device["deveui"]);
+        $msg["devices"][$n]["app_id"] = $device["app_id"];
+        $msg["devices"][$n]["dev_id"] = $device["dev_id"];
         $msg["devices"][$n]["created"] = $device["created"];
         $n++;
       }
