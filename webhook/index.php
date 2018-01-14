@@ -13,7 +13,7 @@ if (isset($headers["Authorization"])) {
   if (isset($data["hardware_serial"])) {
     $check_auth = $pdo->prepare("SELECT pseudonym FROM devices WHERE authorization = ? and deveui = ?"); //Check authorization
     $check_auth->execute(array($authorization, hex2bin($data["hardware_serial"])));
-    $pseudonym = $check_auth->fetch();
+    $pseudonym = $check_auth->fetch()["pseudonym"];
     if (empty($pseudonym)) { //Device ID does not belong to Authorization token
       if ($AUTO_ADOPTION == FALSE) { //Don't try to adopt device, if auto adoption is disabled
         print("Error: The authorization token is invalid or device ID (Hardware Serial) does not belong to your authorization token");
@@ -71,6 +71,7 @@ if (isset($headers["Authorization"])) {
 
             $statement = $pdo->prepare("INSERT INTO devices (authorization, deveui, app_id, dev_id, comment, created) VALUES (?, ?, ?, ?, ?, UTC_TIMESTAMP())"); //Register device
             $statement->execute(array($authorization, hex2bin($data["hardware_serial"]), $data["app_id"], $data["dev_id"], $comment));
+            $pseudonym = $pdo->lastInsertId();
             print("Notice: The device was auto adopted");
           }
         }
@@ -85,7 +86,7 @@ if (isset($headers["Authorization"])) {
     if ($data["metadata"]["modulation"] == "LORA") {
       if (check_array($data, array("hardware_serial", "metadata", "dev_id", "counter")) && check_array($data["metadata"], array("time", "frequency", "data_rate", "coding_rate", "gateways"))) { //Check packet data for required fields
         if ($LOG_WEBHOOK == TRUE)
-          file_put_contents("logging/". $pseudonym["pseudonym"]."_".gmdate("Y-m-d_H-i-s") .".json", json_encode($data)); //Log last request if enabled
+          file_put_contents("logging/". $pseudonym."_".gmdate("Y-m-d_H-i-s") .".json", json_encode($data)); //Log last request if enabled
 
         foreach ($data["metadata"]["gateways"] as $key=>$gateway) { //Check if all required fields for gateway were transmitted
           if (!isset($gateway["latitude"]) or !isset($gateway["longitude"])) { //gateway lat, lon not available
@@ -120,7 +121,7 @@ if (isset($headers["Authorization"])) {
 
         //After preparing data, we can finally store it
         $mysql_data = array();
-        $mysql_data['dev_pseudonym'] = $pseudonym["pseudonym"];
+        $mysql_data['dev_pseudonym'] = $pseudonym;
         $mysql_data['packet_count'] = $data["counter"];
         $mysql_data['pkt_time'] = $data["metadata"]["time"];
         $mysql_data['frequency'] = $data["metadata"]["frequency"];
