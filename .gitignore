@@ -99,6 +99,4 @@ ENV/
 
 # mypy
 .mypy_cache/
-/Web_Hook/config.php
-/Web_Hook/log.json
-/webhook/log.json
+/webhook/logging/*.json
