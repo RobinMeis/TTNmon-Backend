@@ -30,9 +30,10 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") { //Get packets
 
     //Get stats for device gateway combination
     $msg["stats"] = array();
-    $statement = $pdo->prepare("SELECT MIN(channel) AS channel_min, MAX(channel) AS channel_max, MIN(rssi) AS rssi_min, MAX(rssi) AS rssi_max, MIN(snr) AS snr_min, MAX(snr) AS snr_max FROM gateways LEFT JOIN (packets) ON (packets.id = gateways.packet_id) WHERE packets.time >= ? and packets.time <= ? and dev_pseudonym = ? and gtw_id = ?");
+    $statement = $pdo->prepare("SELECT count(gateways.id) AS total_packets, MIN(channel) AS channel_min, MAX(channel) AS channel_max, MIN(rssi) AS rssi_min, MAX(rssi) AS rssi_max, MIN(snr) AS snr_min, MAX(snr) AS snr_max FROM gateways LEFT JOIN (packets) ON (packets.id = gateways.packet_id) WHERE packets.time >= ? and packets.time <= ? and dev_pseudonym = ? and gtw_id = ?");
     $statement->execute(array($_GET["date_start"], $_GET["date_end"], $_GET["dev_pseudonym"], $_GET["gtw_id"]));
     $stats = $statement->fetch();
+    $msg["stats"]["packets"] = $stats["total_packets"];
     $msg["stats"]["channel_min"] = $stats["channel_min"];
     $msg["stats"]["channel_max"] = $stats["channel_max"];
     $msg["stats"]["rssi_min"] = $stats["rssi_min"];
