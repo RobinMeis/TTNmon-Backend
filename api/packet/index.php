@@ -18,9 +18,9 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") { //Get packets
     while ($packet = $statement->fetch()) {
       $msg["packets"][$n] = array();
       $msg["packets"][$n]["time"] = $packet["time"];
-      $msg["packets"][$n]["packet_count"] = $packet["packet_count"];
-      $msg["packets"][$n]["frequency"] = $packet["frequency"];
-      $msg["packets"][$n]["SF"] = $packet["SF"];
+      $msg["packets"][$n]["packet_count"] = (int)$packet["packet_count"];
+      $msg["packets"][$n]["frequency"] = floatval($packet["frequency"]);
+      $msg["packets"][$n]["SF"] = (int)$packet["SF"];
       $n++;
     }
 
