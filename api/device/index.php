@@ -10,14 +10,20 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") { //get registered devices
   if (isset($_GET["auth_token"])) { //All required parameters were specified
     $pdo = new PDO('mysql:host='.$MYSQL_SERVER.';dbname='.$MYSQL_DB, $MYSQL_USER, $MYSQL_PASSWD);
 
-    $statement = $pdo->prepare("SELECT authorization FROM authorizations WHERE authorization = ?");
+    $statement = $pdo->prepare("SELECT authorization, administrator FROM authorizations WHERE authorization = ?");
     $statement->execute(array($_GET["auth_token"]));
-    if (empty($statement->fetch())) { //Auth Error
+    $administrator = $statement->fetch();
+    if (empty($administrator)) { //Auth Error
       $msg["error"] = 1;
       $msg["msg_en"] = "Invalid authorization token";
     } else { //Auth OK
+      $administrator = $administrator["administrator"];
       $msg["devices"] = array();
-      $statement = $pdo->prepare("SELECT deveui, app_id, dev_id, pseudonym, created FROM devices WHERE authorization = ?");
+
+      if ($administrator == 1) //If administrator: Allowed to __see__ any device
+        $statement = $pdo->prepare("SELECT deveui, app_id, dev_id, pseudonym, created FROM devices");
+      else
+        $statement = $pdo->prepare("SELECT deveui, app_id, dev_id, pseudonym, created FROM devices WHERE authorization = ?");
       $statement->execute(array($_GET["auth_token"]));
 
       $n = 0;
@@ -46,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") { //get registered devices
       } else {
         $pdo = new PDO('mysql:host='.$MYSQL_SERVER.';dbname='.$MYSQL_DB, $MYSQL_USER, $MYSQL_PASSWD);
 
-        $statement = $pdo->prepare("SELECT authorization FROM authorizations WHERE authorization = ?"); //Check authorization
+        $statement = $pdo->prepare("SELECT authorization FROM authorizations WHERE authorization = ? and administrator = FALSE"); //Check authorization, administrators are not allowed to add devices
         $statement->execute(array($_GET["auth_token"]));
         if (empty($statement->fetch())) { //Auth Error
           $msg["error"] = 1;

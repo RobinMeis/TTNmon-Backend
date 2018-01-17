@@ -25,7 +25,7 @@ if (isset($headers["Authorization"])) {
           print("Error: The device belongs to another authorization");
           exit();
         } else { //Register device
-          $check_auth = $pdo->prepare("SELECT created FROM authorizations WHERE authorization = ?"); //Check authorization
+          $check_auth = $pdo->prepare("SELECT created FROM authorizations WHERE authorization = ? and administrator = FALSE"); //Check authorization, disallow admins to register new devices
           $check_auth->execute(array($authorization));
           if (empty($check_auth->fetch())) { //Authorization invalid
             print("Error: The authorization token is invalid");
