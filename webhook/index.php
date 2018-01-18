@@ -130,11 +130,12 @@ if (isset($headers["Authorization"])) {
         $mysql_data['BW'] = $data["metadata"]["BW"];
         $mysql_data['CR_k'] = $data["metadata"]["CR_k"];
         $mysql_data['CR_n'] = $data["metadata"]["CR_n"];
+        $mysql_data['gateway_count'] = count($data["metadata"]["gateways"]);
         $mysql_data['latitude'] = $data["metadata"]["latitude"];
         $mysql_data['longitude'] = $data["metadata"]["longitude"];
         $mysql_data['altitude'] = $data["metadata"]["altitude"];
 
-        $statement = $pdo->prepare("INSERT INTO packets (`dev_pseudonym`, `packet_count`, `time`, `frequency`, `modulation`, `SF`, `BW`, `CR_k`, `CR_n`, `latitude`, `longitude`, `altitude`) VALUES (:dev_pseudonym, :packet_count, :pkt_time, :frequency, :modulation, :SF, :BW, :CR_k, :CR_n, :latitude, :longitude, :altitude)");
+        $statement = $pdo->prepare("INSERT INTO packets (`dev_pseudonym`, `packet_count`, `time`, `frequency`, `modulation`, `SF`, `BW`, `CR_k`, `CR_n`, `gateway_count`, `latitude`, `longitude`, `altitude`) VALUES (:dev_pseudonym, :packet_count, :pkt_time, :frequency, :modulation, :SF, :BW, :CR_k, :CR_n, :gateway_count, :latitude, :longitude, :altitude)");
         $statement->execute($mysql_data);
         $packet_id = $pdo->lastInsertId();
         foreach ($data["metadata"]["gateways"] as $gateway) {

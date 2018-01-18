@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jan 18, 2018 at 02:33 PM
+-- Generation Time: Jan 18, 2018 at 06:23 PM
 -- Server version: 5.1.73-log
 -- PHP Version: 5.6.32
 
@@ -73,7 +73,7 @@ CREATE TABLE IF NOT EXISTS `gateways` (
   `time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `packet_id` (`packet_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=15547 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=18223 ;
 
 -- --------------------------------------------------------
 
@@ -92,12 +92,13 @@ CREATE TABLE IF NOT EXISTS `packets` (
   `BW` int(11) DEFAULT NULL,
   `CR_k` int(11) NOT NULL,
   `CR_n` int(11) NOT NULL,
+  `gateway_count` int(11) DEFAULT NULL,
   `latitude` double DEFAULT NULL,
   `longitude` double DEFAULT NULL,
   `altitude` double DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `dev_pseudonym` (`dev_pseudonym`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=9629 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=10751 ;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
