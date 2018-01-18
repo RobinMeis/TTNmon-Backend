@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") { //Get packets
       $n++;
     }
 
-    $statement = $pdo->prepare("SELECT count(id) AS packets, MIN(SF) AS SF_min, MAX(SF) AS SF_max FROM packets WHERE `dev_pseudonym` = ? and `time` >= ? and `time` <= ?");
+    $statement = $pdo->prepare("SELECT count(id) AS packets, MIN(SF) AS SF_min, MAX(SF) AS SF_max, MIN(gateway_count) AS gateway_count_min, MAX(gateway_count) AS gateway_count_max FROM packets WHERE `dev_pseudonym` = ? and `time` >= ? and `time` <= ?");
     $statement->execute(array($_GET["dev_pseudonym"], $_GET["date_start"], $_GET["date_end"]));
     $packet_stats = $statement->fetch();
     $msg["packet_stats"] = array(); //Packet stats
@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") { //Get packets
     $msg["packet_stats"]["gateway_count_min"] = $packet_stats["gateway_count_min"];
     $msg["packet_stats"]["gateway_count_max"] = $packet_stats["gateway_count_max"];
 
-    $statement = $pdo->prepare("SELECT gtw_id, MIN(snr) AS snr_min, MAX(SNR) as snr_max, MIN(rssi) AS rssi_min, MAX(rssi) AS rssi_max, MIN(gateway_count) AS gateway_count_min, MAX(gateway_count) AS gateway_count_max, count(gtw_id) AS packets, gateways.latitude AS lat, gateways.longitude AS lon, gateways.altitude AS alt FROM gateways LEFT JOIN (packets) ON (packets.id = gateways.packet_id) WHERE dev_pseudonym = ? and packets.time >= ? and packets.time <= ? GROUP BY `gtw_id`");
+    $statement = $pdo->prepare("SELECT gtw_id, MIN(snr) AS snr_min, MAX(SNR) as snr_max, MIN(rssi) AS rssi_min, MAX(rssi) AS rssi_max, count(gtw_id) AS packets, gateways.latitude AS lat, gateways.longitude AS lon, gateways.altitude AS alt FROM gateways LEFT JOIN (packets) ON (packets.id = gateways.packet_id) WHERE dev_pseudonym = ? and packets.time >= ? and packets.time <= ? GROUP BY `gtw_id`");
     $statement->execute(array($_GET["dev_pseudonym"], $_GET["date_start"], $_GET["date_end"]));
 
     $n = 0;
