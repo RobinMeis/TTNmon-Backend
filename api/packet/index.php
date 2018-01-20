@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") { //Get packets
     $msg["packet_stats"]["gateway_count_min"] = $packet_stats["gateway_count_min"];
     $msg["packet_stats"]["gateway_count_max"] = $packet_stats["gateway_count_max"];
 
-    $statement = $pdo->prepare("SELECT gtw_id, MIN(snr) AS snr_min, MAX(SNR) as snr_max, MIN(rssi) AS rssi_min, MAX(rssi) AS rssi_max, count(gtw_id) AS packets, gateways.latitude AS lat, gateways.longitude AS lon, gateways.altitude AS alt FROM gateways LEFT JOIN (packets) ON (packets.id = gateways.packet_id) WHERE dev_pseudonym = ? and packets.time >= ? and packets.time <= ? GROUP BY `gtw_id`");
+    $statement = $pdo->prepare("SELECT gtw_id, MIN(snr) AS snr_min, MAX(SNR) as snr_max, MIN(rssi) AS rssi_min, MAX(rssi) AS rssi_max, count(gtw_id) AS packets, gateways.latitude AS latitude, gateways.longitude AS longitude, gateways.altitude AS altitude FROM gateways LEFT JOIN (packets) ON (packets.id = gateways.packet_id) WHERE dev_pseudonym = ? and packets.time >= ? and packets.time <= ? GROUP BY `gtw_id`");
     $statement->execute(array($_GET["dev_pseudonym"], $_GET["date_start"], $_GET["date_end"]));
 
     $n = 0;
@@ -56,14 +56,24 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") { //Get packets
     while ($gateway = $statement->fetch()) {
       $msg["gateways"][$n] = array(); //List of all gateways which received the messages
       $msg["gateways"][$n]["gtw_id"] = $gateway["gtw_id"];
-      $msg["gateways"][$n]["packets"] = $gateway["packets"];
-      $msg["gateways"][$n]["snr_min"] = $gateway["snr_min"];
-      $msg["gateways"][$n]["snr_max"] = $gateway["snr_max"];
-      $msg["gateways"][$n]["rssi_min"] = $gateway["rssi_min"];
-      $msg["gateways"][$n]["rssi_max"] = $gateway["rssi_max"];
-      $msg["gateways"][$n]["lat"] = $gateway["lat"];
-      $msg["gateways"][$n]["lon"] = $gateway["lon"];
-      $msg["gateways"][$n]["alt"] = $gateway["alt"];
+      $msg["gateways"][$n]["packets"] = (int)$gateway["packets"];
+      $msg["gateways"][$n]["snr_min"] = floatval($gateway["snr_min"]);
+      $msg["gateways"][$n]["snr_max"] = floatval($gateway["snr_max"]);
+      $msg["gateways"][$n]["rssi_min"] = (int)$gateway["rssi_min"];
+      $msg["gateways"][$n]["rssi_max"] = (int)$gateway["rssi_max"];
+
+      if ($gateway["latitude"] == null || $gateway["longitude"] == null) { //No coordinates
+        $msg["gateways"][$n]["lat"] = null;
+        $msg["gateways"][$n]["lon"] = null;
+        $msg["gateways"][$n]["alt"] = null;
+      } else { //latitude & longitude available
+        $msg["gateways"][$n]["lat"] = floatval($gateway["latitude"]);
+        $msg["gateways"][$n]["lon"] = floatval($gateway["longitude"]);
+        if ($packet["altitude"] == null) //No altitude
+          $msg["gateways"][$n]["alt"] = null;
+        else //altitude
+          $msg["gateways"][$n]["alt"] = floatval($gateway["altitude"]);
+      }
       $n++;
     }
   } else {
