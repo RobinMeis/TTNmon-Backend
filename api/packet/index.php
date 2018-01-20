@@ -10,7 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") { //Get packets
     $msg["error"] = 0;
     $pdo = new PDO('mysql:host='.$MYSQL_SERVER.';dbname='.$MYSQL_DB, $MYSQL_USER, $MYSQL_PASSWD);
 
-    $statement = $pdo->prepare("SELECT DATE_FORMAT( `time` , '%Y-%m-%dT%TZ' ) AS `time`, `packet_count`, `frequency`, `SF`, `BW`, `CR_k`, `CR_n`, `gateway_count` FROM packets WHERE `dev_pseudonym` = ? and `time` >= ? and `time` <= ?");
+    $statement = $pdo->prepare("SELECT DATE_FORMAT( `time` , '%Y-%m-%dT%TZ' ) AS `time`, `packet_count`, `frequency`, `SF`, `BW`, `CR_k`, `CR_n`, `gateway_count`, `latitude`, `longitude`, `altitude` FROM packets WHERE `dev_pseudonym` = ? and `time` >= ? and `time` <= ?");
     $statement->execute(array($_GET["dev_pseudonym"], $_GET["date_start"], $_GET["date_end"]));
 
     $n = 0;
@@ -22,6 +22,9 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") { //Get packets
       $msg["packets"][$n]["frequency"] = floatval($packet["frequency"]);
       $msg["packets"][$n]["SF"] = (int)$packet["SF"];
       $msg["packets"][$n]["gateway_count"] = (int)$packet["gateway_count"];
+      $msg["packets"][$n]["latitude"] = floatval($packet["latitude"]);
+      $msg["packets"][$n]["longitude"] = floatval($packet["longitude"]);
+      $msg["packets"][$n]["altitude"] = floatval($packet["altitude"]);
       $n++;
     }
 
