@@ -69,7 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") { //Get packets
       } else { //latitude & longitude available
         $msg["gateways"][$n]["lat"] = floatval($gateway["latitude"]);
         $msg["gateways"][$n]["lon"] = floatval($gateway["longitude"]);
-        if ($packet["altitude"] == null) //No altitude
+        if ($gateway["altitude"] == null) //No altitude
           $msg["gateways"][$n]["alt"] = null;
         else //altitude
           $msg["gateways"][$n]["alt"] = floatval($gateway["altitude"]);
