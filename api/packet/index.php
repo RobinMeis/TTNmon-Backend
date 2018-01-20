@@ -22,9 +22,19 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") { //Get packets
       $msg["packets"][$n]["frequency"] = floatval($packet["frequency"]);
       $msg["packets"][$n]["SF"] = (int)$packet["SF"];
       $msg["packets"][$n]["gateway_count"] = (int)$packet["gateway_count"];
-      $msg["packets"][$n]["latitude"] = floatval($packet["latitude"]);
-      $msg["packets"][$n]["longitude"] = floatval($packet["longitude"]);
-      $msg["packets"][$n]["altitude"] = floatval($packet["altitude"]);
+
+      if ($packet["latitude"] == null || $packet["longitude"] == null) { //No coordinates
+        $msg["packets"][$n]["latitude"] = null;
+        $msg["packets"][$n]["longitude"] = null;
+        $msg["packets"][$n]["altitude"] = null;
+      } else { //latitude & longitude available
+        $msg["packets"][$n]["latitude"] = floatval($packet["latitude"]);
+        $msg["packets"][$n]["longitude"] = floatval($packet["longitude"]);
+        if ($packet["altitude"] == null) //No altitude
+          $msg["packets"][$n]["altitude"] = null;
+        else //altitude
+          $msg["packets"][$n]["altitude"] = floatval($packet["altitude"]);
+      }
       $n++;
     }
 
