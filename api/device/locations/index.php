@@ -9,7 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") { //Get packets
   $msg["error"] = 0;
   $pdo = new PDO('mysql:host='.$MYSQL_SERVER.';dbname='.$MYSQL_DB, $MYSQL_USER, $MYSQL_PASSWD);
 
-  $statement = $pdo->prepare("SELECT `pseudonym`, `created`, `last_seen`, `latitude, longitude`, `altitude` FROM `devices` WHERE `latitude` is not null and `longitude` is not null");
+  $statement = $pdo->prepare("SELECT `pseudonym`, `created`, `last_seen`, `latitude, longitude`, `altitude` FROM devices WHERE `latitude` is not null and `longitude` is not null");
   $statement->execute();
 
     $msg["devices"] = array();
