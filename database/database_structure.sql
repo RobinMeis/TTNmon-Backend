@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jan 22, 2018 at 11:49 PM
+-- Generation Time: Jan 23, 2018 at 12:14 AM
 -- Server version: 5.1.73-log
 -- PHP Version: 5.6.32
 
@@ -48,6 +48,10 @@ CREATE TABLE IF NOT EXISTS `devices` (
   `dev_id` text COLLATE utf8_unicode_ci,
   `pseudonym` int(11) NOT NULL AUTO_INCREMENT,
   `created` datetime NOT NULL,
+  `last_seen` datetime DEFAULT NULL,
+  `latitude` double DEFAULT NULL,
+  `longitude` double DEFAULT NULL,
+  `altitude` double DEFAULT NULL,
   `comment` text COLLATE utf8_unicode_ci,
   PRIMARY KEY (`pseudonym`),
   UNIQUE KEY `deveui` (`deveui`)
@@ -74,7 +78,7 @@ CREATE TABLE IF NOT EXISTS `gateways` (
   PRIMARY KEY (`id`),
   KEY `packet_id` (`packet_id`),
   FULLTEXT KEY `gtw_id` (`gtw_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=190098 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=191059 ;
 
 -- --------------------------------------------------------
 
@@ -100,7 +104,7 @@ CREATE TABLE IF NOT EXISTS `packets` (
   PRIMARY KEY (`id`),
   KEY `dev_pseudonym` (`dev_pseudonym`),
   KEY `time` (`time`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=88255 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=88806 ;
 
 -- --------------------------------------------------------
 
@@ -119,7 +123,7 @@ CREATE TABLE IF NOT EXISTS `preprocessed_gateway-list` (
   `first_seen` datetime NOT NULL,
   `last_seen` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=163 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=433 ;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
