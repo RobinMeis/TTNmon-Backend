@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jan 18, 2018 at 06:23 PM
+-- Generation Time: Jan 22, 2018 at 11:49 PM
 -- Server version: 5.1.73-log
 -- PHP Version: 5.6.32
 
@@ -51,7 +51,7 @@ CREATE TABLE IF NOT EXISTS `devices` (
   `comment` text COLLATE utf8_unicode_ci,
   PRIMARY KEY (`pseudonym`),
   UNIQUE KEY `deveui` (`deveui`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=14 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=29 ;
 
 -- --------------------------------------------------------
 
@@ -72,8 +72,9 @@ CREATE TABLE IF NOT EXISTS `gateways` (
   `altitude` double DEFAULT NULL,
   `time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `packet_id` (`packet_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=18223 ;
+  KEY `packet_id` (`packet_id`),
+  FULLTEXT KEY `gtw_id` (`gtw_id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=190098 ;
 
 -- --------------------------------------------------------
 
@@ -97,8 +98,28 @@ CREATE TABLE IF NOT EXISTS `packets` (
   `longitude` double DEFAULT NULL,
   `altitude` double DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `dev_pseudonym` (`dev_pseudonym`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=10751 ;
+  KEY `dev_pseudonym` (`dev_pseudonym`),
+  KEY `time` (`time`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=88255 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `preprocessed_gateway-list`
+--
+
+CREATE TABLE IF NOT EXISTS `preprocessed_gateway-list` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `gtw_id` text COLLATE utf8_unicode_ci NOT NULL,
+  `channels` int(11) NOT NULL,
+  `packets` int(11) NOT NULL,
+  `latitude` double DEFAULT NULL,
+  `longitude` double DEFAULT NULL,
+  `altitude` double DEFAULT NULL,
+  `first_seen` datetime NOT NULL,
+  `last_seen` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=163 ;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
