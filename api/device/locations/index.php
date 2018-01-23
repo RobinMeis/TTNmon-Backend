@@ -18,8 +18,8 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") { //Get packets
       $msg["devices"][$n] = array();
       $msg["devices"][$n]["pseudonym"] = (int)$device["pseudonym"];
       $msg["devices"][$n]["latitude"] = floatval($device["latitude"]);
-      $msg["devices"][$n]["longitude"] = floatval($device["latitude"]);
-      $msg["devices"][$n]["altitude"] = floatval($device["latitude"]);
+      $msg["devices"][$n]["longitude"] = floatval($device["longitude"]);
+      $msg["devices"][$n]["altitude"] = floatval($device["altitude"]);
       $msg["devices"][$n]["created"] = $device["created"];
       $msg["devices"][$n]["last_seen"] = $device["last_seen"];
       $n++;
