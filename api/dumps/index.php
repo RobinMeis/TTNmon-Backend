@@ -9,10 +9,10 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") { //Get packets
   $msg["error"] = 0;
   $msg["dumps"] = array();
   $files = scandir (".");
+  $n = 0;
   foreach ($files as $file) {
-    $n = 0;
     if (strpos($file, "ttnmon_dump-") !== FALSE) {
-      $msg["dumps"][$n] = array();#
+      $msg["dumps"][$n] = array();
       $msg["dumps"][$n]["download_url"] = $ENDPOINT_URL ."api/dumps/".$file;
       $msg["dumps"][$n]["filesize"] = filesize ($file);
       $msg["dumps"][$n]["filetime"] = date ("c", filemtime ($file));
