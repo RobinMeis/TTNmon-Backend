@@ -17,6 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") { //Get packets
       $msg["dumps"][$n]["filesize"] = filesize ($file);
       $msg["dumps"][$n]["filetime"] = date ("c", filemtime ($file));
       $msg["dumps"][$n]["filename"] = $file;
+      $msg["dumps"][$n]["sha256"] = hash_file ("sha256", $file);
     }
   }
 } else {
