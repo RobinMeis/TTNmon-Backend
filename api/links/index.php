@@ -14,25 +14,12 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") { //Get packets
 
     $msg["links"] = array();
     $n = 0;
-    while ($gateway = $statement->fetch()) {
-      $msg["gateways"][$n] = array();
-      $msg["gateways"][$n]["gtw_id"] = $gateway["gtw_id"];
-      $msg["gateways"][$n]["channels"] = (int)$gateway["channels"];
-      $msg["gateways"][$n]["packets"] = (int)$gateway["packets"];
-      if ($gateway["latitude"] == null || $gateway["longitude"] == null) {
-        $msg["gateways"][$n]["latitude"] = null;
-        $msg["gateways"][$n]["longitude"] = null;
-        $msg["gateways"][$n]["altitude"] = null;
-      } else {
-        $msg["gateways"][$n]["latitude"] = floatval($gateway["latitude"]);
-        $msg["gateways"][$n]["longitude"] = floatval($gateway["longitude"]);
-        if ($gateway["altitude"] == null)
-          $msg["gateways"][$n]["altitude"] = null;
-        else
-          $msg["gateways"][$n]["altitude"] = floatval($gateway["altitude"]);
-      }
-      $msg["gateways"][$n]["first_seen"] = $gateway["first_seen"];
-      $msg["gateways"][$n]["last_seen"] = $gateway["last_seen"];
+    while ($link = $statement->fetch()) {
+      $msg["links"][$n] = array();
+      $msg["links"][$n]["dev_pseudonym"] = (int)$link["dev_pseudonym"];
+      $msg["links"][$n]["gtw_id"] = $link["gtw_id"];
+      $msg["links"][$n]["time"] = $link["time"];
+      $msg["links"][$n]["snr"] = floatval ($link["snr"]);
       $n++;
     }
 
