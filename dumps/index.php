@@ -32,6 +32,5 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
   $msg["error"] = -1;
   $msg["msg_en"] = "Error: Unsupported method";
 }
-
 print(json_encode($msg));
 ?>
