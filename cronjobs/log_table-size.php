@@ -25,7 +25,7 @@ foreach ($pdo->query($sql) as $table)
   $csv_data[$table["table_name"]] = $table["size_MB"];
 
 if (!file_exists("table-size.csv"))
-  file_put_contents("table-size.csv", "authorizations;devices;packets;gateways;preprocessed_gateway-list;preprocessed_links\n");
+  file_put_contents("table-size.csv", "date;authorizations;devices;packets;gateways;preprocessed_gateway-list;preprocessed_links\n");
 
-file_put_contents("table-size.csv", $csv_data["authorizations"].";".$csv_data["devices"].";".$csv_data["packets"].";".$csv_data["gateways"].";".$csv_data["preprocessed_gateway-list"].";".$csv_data["preprocessed_links"]."\n", FILE_APPEND);
+file_put_contents("table-size.csv", date("c").";".$csv_data["authorizations"].";".$csv_data["devices"].";".$csv_data["packets"].";".$csv_data["gateways"].";".$csv_data["preprocessed_gateway-list"].";".$csv_data["preprocessed_links"]."\n", FILE_APPEND);
 ?>
