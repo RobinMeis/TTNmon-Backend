@@ -22,9 +22,10 @@ $csv_data = array(
 );
 
 $sum = 0;
-foreach ($pdo->query($sql) as $table)
+foreach ($pdo->query($sql) as $table) {
   $csv_data[$table["table_name"]] = $table["size_MB"];
   $sum += $table["size_MB"];
+}
 if (!file_exists("table-size.csv"))
   file_put_contents("table-size.csv", "ISO 8601 date;Size in MB\ndate;authorizations;devices;packets;gateways;preprocessed_gateway-list;preprocessed_links;sum\n");
 
