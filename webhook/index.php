@@ -2,6 +2,7 @@
 require_once("../config.php");
 require_once("check_array.inc.php");
 require_once("getallheaders.inc.php");
+require_once("distance.inc.php");
 
 $headers = getallheaders();
 if (isset($headers["Authorization"])) {
@@ -165,8 +166,12 @@ if (isset($headers["Authorization"])) {
           $mysql_data["latitude"] = $gtw_latitude;
           $mysql_data["longitude"] = $gtw_longitude;
           $mysql_data["altitude"] = $gtw_latitude;
+          if ($gtw_latitude == null || $gtw_longitude == null || $data["metadata"]["latitude"] == null || $data["metadata"]["longitude"] == null) //Calculate distance between node and gateway if available
+            $mysql_data["distance"] = null;
+          else
+            $mysql_data["distance"] = vincentyGreatCircleDistance($gtw_latitude, $gtw_longitude, $data["metadata"]["latitude"], $data["metadata"]["longitude"]);
 
-          $statement = $pdo->prepare("INSERT INTO gateways (`packet_id`, `gtw_id`, `channel`, `rssi`, `snr`, `rf_chain`, `latitude`, `longitude`, `altitude`, `time`) VALUES (:packet_id, :gtw_id, :channel, :rssi, :snr, :rf_chain, :latitude, :longitude, :altitude, :time)");
+          $statement = $pdo->prepare("INSERT INTO gateways (`packet_id`, `gtw_id`, `channel`, `rssi`, `snr`, `rf_chain`, `latitude`, `longitude`, `altitude`, `time`, `distance`) VALUES (:packet_id, :gtw_id, :channel, :rssi, :snr, :rf_chain, :latitude, :longitude, :altitude, :time, :distance)");
           $statement->execute($mysql_data);
 
           $mysql_data = array(); //Try to update gateway
