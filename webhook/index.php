@@ -186,6 +186,22 @@ if (isset($headers["Authorization"])) {
             $statement = $pdo->prepare("INSERT INTO gateway_list (`gtw_id`, `first_seen`, `last_seen`, `latitude`, `longitude`, `altitude`) VALUES (:gtw_id, UTC_TIMESTAMP(), UTC_TIMESTAMP(), :latitude, :longitude, :altitude)");
             $statement->execute($mysql_data);
           }
+
+          $mysql_data = array(); //Try to update link between node and gateway
+          $mysql_data['gtw_id'] = $gateway["gtw_id"];
+          $mysql_data['dev_pseudonym'] = $pseudonym;
+          $mysql_data['snr'] = -$gateway["snr"];
+          $statement = $pdo->prepare("UPDATE link_list SET `snr` = :snr, `time` = UTC_TIMESTAMP() WHERE `gtw_id` = :gtw_id and dev_pseudonym = :dev_pseudonym");
+          $statement->execute($mysql_data);
+
+          if ($statement->rowCount() == 0) { //link is not yet in link list, add it
+            $mysql_data = array();
+            $mysql_data['gtw_id'] = $gateway["gtw_id"];
+            $mysql_data['dev_pseudonym'] = $pseudonym;
+            $mysql_data['snr'] = -$gateway["snr"];
+            $statement = $pdo->prepare("INSERT INTO link_list (`gtw_id`, `dev_pseudonym`, `time`, `snr`) VALUES (:gtw_id, :dev_pseudonym, UTC_TIMESTAMP(), :snr)");
+            $statement->execute($mysql_data);
+          }
         }
 
         $mysql_data = array(); //Update device
