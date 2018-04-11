@@ -164,15 +164,15 @@ if (isset($headers["Authorization"])) {
 
           $statement = $pdo->prepare("INSERT INTO gateways (`packet_id`, `gtw_id`, `channel`, `rssi`, `snr`, `rf_chain`, `latitude`, `longitude`, `altitude`, `time`) VALUES (:packet_id, :gtw_id, :channel, :rssi, :snr, :rf_chain, :latitude, :longitude, :altitude, :time)");
           $statement->execute($mysql_data);
-
-          $mysql_data = array();
-          $mysql_data['latitude'] = $data["metadata"]["latitude"];
-          $mysql_data['longitude'] = $data["metadata"]["longitude"];
-          $mysql_data['altitude'] = $data["metadata"]["altitude"];
-          $mysql_data['dev_pseudonym'] = $pseudonym;
-          $statement = $pdo->prepare("UPDATE devices SET `latitude` = :latitude, `longitude` = :longitude, `altitude` = :altitude, `last_seen` = UTC_TIMESTAMP() WHERE `pseudonym` = :dev_pseudonym");
-          $statement->execute($mysql_data);
         }
+
+        $mysql_data = array(); //Update device
+        $mysql_data['latitude'] = $data["metadata"]["latitude"];
+        $mysql_data['longitude'] = $data["metadata"]["longitude"];
+        $mysql_data['altitude'] = $data["metadata"]["altitude"];
+        $mysql_data['dev_pseudonym'] = $pseudonym;
+        $statement = $pdo->prepare("UPDATE devices SET `latitude` = :latitude, `longitude` = :longitude, `altitude` = :altitude, `last_seen` = UTC_TIMESTAMP() WHERE `pseudonym` = :dev_pseudonym");
+        $statement->execute($mysql_data);
         print("OK");
       } else {
         print("Error: Packet data incomplete. Required fields are hardware_serial, counter, metadata, dev_id, time, frequency, data_rate, bit_rate, coding_rate, gateways");
