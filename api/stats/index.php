@@ -10,7 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") { //get registered devices
   $statement->execute();
   $msg["stats"] = array();
   while ($table = $statement->fetch()) {
-    if ($table["Name"] == 'preprocessed_gateway-list') {
+    if ($table["Name"] == 'gateway_list') {
       $msg["stats"]["unique_gateways"] = array();
       $msg["stats"]["unique_gateways"]["count"] = $table["Rows"];
     } else {
