@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") { //Get packets
     $msg["packet_stats"]["gateway_count_min"] = $packet_stats["gateway_count_min"];
     $msg["packet_stats"]["gateway_count_max"] = $packet_stats["gateway_count_max"];
 
-    $statement = $pdo->prepare("SELECT gtw_id, MIN(snr) AS snr_min, MAX(SNR) as snr_max, MIN(rssi) AS rssi_min, MAX(rssi) AS rssi_max, count(gtw_id) AS packets, gateways.latitude AS latitude, gateways.longitude AS longitude, gateways.altitude AS altitude FROM gateways LEFT JOIN (packets) ON (packets.id = gateways.packet_id) WHERE dev_pseudonym = ? and packets.time >= ? and packets.time <= ? GROUP BY `gtw_id`");
+    $statement = $pdo->prepare("SELECT gtw_id, MIN(snr) AS snr_min, MAX(SNR) as snr_max, MIN(rssi) AS rssi_min, MAX(rssi) AS rssi_max, count(gtw_id) AS packets, gateways.latitude AS latitude, gateways.longitude AS longitude, gateways.altitude AS altitude, gateways.distance AS distance FROM gateways LEFT JOIN (packets) ON (packets.id = gateways.packet_id) WHERE dev_pseudonym = ? and packets.time >= ? and packets.time <= ? GROUP BY `gtw_id`");
     $statement->execute(array($_GET["dev_pseudonym"], $_GET["date_start"], $_GET["date_end"]));
 
     $n = 0;
@@ -69,10 +69,16 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") { //Get packets
       } else { //latitude & longitude available
         $msg["gateways"][$n]["lat"] = floatval($gateway["latitude"]);
         $msg["gateways"][$n]["lon"] = floatval($gateway["longitude"]);
+
         if ($gateway["altitude"] == null) //No altitude
           $msg["gateways"][$n]["alt"] = null;
         else //altitude
           $msg["gateways"][$n]["alt"] = floatval($gateway["altitude"]);
+
+        if ($gateway["distance"] == null) //No distance
+          $msg["gateways"][$n]["distance"] = null;
+        else
+          $msg["gateways"][$n]["distance"] = floatval($gateway["distance"]);
       }
       $n++;
     }
