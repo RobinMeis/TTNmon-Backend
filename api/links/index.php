@@ -9,7 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") { //Get packets
   $msg["error"] = 0;
   $pdo = new PDO('mysql:host='.$MYSQL_SERVER.';dbname='.$MYSQL_DB, $MYSQL_USER, $MYSQL_PASSWD);
 
-  $statement = $pdo->prepare("SELECT `dev_pseudonym`, `gtw_id`, `time`, `snr` FROM `preprocessed_links`");
+  $statement = $pdo->prepare("SELECT `dev_pseudonym`, `gtw_id`, `time`, `snr` FROM `link_list` WHERE `time` > UTC_TIMESTAMP() - INTERVAL 7 DAY");
   $statement->execute();
 
     $msg["links"] = array();
