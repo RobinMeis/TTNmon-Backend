@@ -9,7 +9,11 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") { //Get packets
   $msg["error"] = 0;
   $pdo = new PDO('mysql:host='.$MYSQL_SERVER.';dbname='.$MYSQL_DB, $MYSQL_USER, $MYSQL_PASSWD);
 
-  $statement = $pdo->prepare("SELECT `gtw_id`, `channels`, `packets`, `latitude`, `longitude`, `altitude`, `first_seen`, `last_seen` FROM `gateway_list`");
+  if (isset($_GET["hide_offline"]) && $_GET["hide_offline"] == TRUE) //Shows only gateways which where seen within the last two weeks
+    $statement = $pdo->prepare("SELECT `gtw_id`, `channels`, `packets`, `latitude`, `longitude`, `altitude`, `first_seen`, `last_seen` FROM `gateway_list` WHERE `last_seen` > UTC_TIMESTAMP() - INTERVAL 14 DAY");
+  else
+    $statement = $pdo->prepare("SELECT `gtw_id`, `channels`, `packets`, `latitude`, `longitude`, `altitude`, `first_seen`, `last_seen` FROM `gateway_list`");
+
   $statement->execute();
 
     $msg["gateways"] = array();
