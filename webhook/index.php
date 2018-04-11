@@ -86,7 +86,7 @@ if (isset($headers["Authorization"])) {
   if (isset($data["metadata"]["modulation"])) {
     if ($data["metadata"]["modulation"] == "LORA") {
       if (check_array($data, array("hardware_serial", "metadata", "dev_id", "counter")) && check_array($data["metadata"], array("time", "frequency", "data_rate", "coding_rate", "gateways"))) { //Check packet data for required fields
-        if ($LOG_WEBHOOK == TRUE)
+        if ($LOG_WEBHOOK == TRUE && strtoupper($data["hardware_serial"]) == $LOG_DEVEUI)
           file_put_contents("logging/". $pseudonym."_".gmdate("Y-m-d_H-i-s") .".json", json_encode($data)); //Log last request if enabled
 
         foreach ($data["metadata"]["gateways"] as $key=>$gateway) { //Check if all required fields for gateway were transmitted
