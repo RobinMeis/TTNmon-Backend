@@ -149,36 +149,40 @@ if (isset($headers["Authorization"])) {
           $mysql_data['rf_chain'] = $gateway["rf_chain"];
 
           if (check_array($gateway, array("latitude", "longitude"))) {
-            $mysql_data["latitude"] = $gateway["latitude"];
-            $mysql_data["longitude"] = $gateway["longitude"];
+            $gtw_latitude = $gateway["latitude"];
+            $gtw_longitude = $gateway["longitude"];
           } else {
-            $mysql_data["latitude"] = null;
-            $mysql_data["longitude"] = null;
+            $gtw_latitude = null;
+            $gtw_longitude = null;
           }
 
-          if (isset($gateway["altitude"]) && $gateway["altitude"] != "null") $mysql_data["altitude"] = $gateway["altitude"];
-          else $mysql_data["altitude"] = null;
+          if (isset($gateway["altitude"]) && $gateway["altitude"] != "null") $gtw_altitude = $gateway["altitude"];
+          else $gtw_altitude = null;
 
           if (isset($gateway["time"]) && $gateway["time"] != "null") $mysql_data["time"] = $gateway["time"];
           else $mysql_data["time"] = null;
+
+          $mysql_data["latitude"] = $gtw_latitude;
+          $mysql_data["longitude"] = $gtw_longitude;
+          $mysql_data["altitude"] = $gtw_latitude;
 
           $statement = $pdo->prepare("INSERT INTO gateways (`packet_id`, `gtw_id`, `channel`, `rssi`, `snr`, `rf_chain`, `latitude`, `longitude`, `altitude`, `time`) VALUES (:packet_id, :gtw_id, :channel, :rssi, :snr, :rf_chain, :latitude, :longitude, :altitude, :time)");
           $statement->execute($mysql_data);
 
           $mysql_data = array(); //Try to update gateway
           $mysql_data['gtw_id'] = $gateway["gtw_id"];
-          $mysql_data['latitude'] = $data["metadata"]["latitude"];
-          $mysql_data['longitude'] = $data["metadata"]["longitude"];
-          $mysql_data['altitude'] = $data["metadata"]["altitude"];
+          $mysql_data['latitude'] = $gtw_latitude;
+          $mysql_data['longitude'] = $gtw_longitude;
+          $mysql_data['altitude'] = $gtw_altitude;
           $statement = $pdo->prepare("UPDATE gateway_list SET `last_seen` = UTC_TIMESTAMP(), `packets` = `packets` + 1, `latitude` = :latitude, `longitude` = :longitude, `altitude` = :altitude WHERE `gtw_id` = :gtw_id");
           $statement->execute($mysql_data);
 
           if ($statement->rowCount() == 0) { //gateway is not yet in gateway list, add it
             $mysql_data = array();
             $mysql_data['gtw_id'] = $gateway["gtw_id"];
-            $mysql_data['latitude'] = $data["metadata"]["latitude"];
-            $mysql_data['longitude'] = $data["metadata"]["longitude"];
-            $mysql_data['altitude'] = $data["metadata"]["altitude"];
+            $mysql_data['latitude'] = $gtw_latitude;
+            $mysql_data['longitude'] = $gtw_longitude;
+            $mysql_data['altitude'] = $gtw_altitude;
             $statement = $pdo->prepare("INSERT INTO gateway_list (`gtw_id`, `first_seen`, `last_seen`, `latitude`, `longitude`, `altitude`) VALUES (:gtw_id, UTC_TIMESTAMP(), UTC_TIMESTAMP(), :latitude, :longitude, :altitude)");
             $statement->execute($mysql_data);
           }
