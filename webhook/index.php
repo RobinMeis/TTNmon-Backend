@@ -1,6 +1,7 @@
 <?php
 require_once("../config.php");
 require_once("check_array.inc.php");
+require_once("getallheaders.inc.php");
 
 $headers = getallheaders();
 if (isset($headers["Authorization"])) {
