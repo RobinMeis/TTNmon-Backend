@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.0.10.15
--- http://www.phpmyadmin.net
+-- version 4.6.6deb4
+-- https://www.phpmyadmin.net/
 --
--- Host: localhost
--- Generation Time: Jan 29, 2018 at 12:29 AM
--- Server version: 5.1.73-log
--- PHP Version: 5.6.32
+-- Host: localhost:3306
+-- Generation Time: Apr 11, 2018 at 08:14 PM
+-- Server version: 10.1.26-MariaDB-0+deb9u1
+-- PHP Version: 7.0.27-0+deb9u1
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -14,10 +14,10 @@ SET time_zone = "+00:00";
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
+/*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `smrtnoob_ttnmon`
+-- Database: `ttnmon`
 --
 
 -- --------------------------------------------------------
@@ -26,14 +26,12 @@ SET time_zone = "+00:00";
 -- Table structure for table `authorizations`
 --
 
-CREATE TABLE IF NOT EXISTS `authorizations` (
+CREATE TABLE `authorizations` (
   `authorization` char(20) COLLATE utf8_unicode_ci NOT NULL,
   `administrator` tinyint(1) NOT NULL DEFAULT '0',
   `created` datetime NOT NULL,
-  `comment` text COLLATE utf8_unicode_ci,
-  UNIQUE KEY `authorization` (`authorization`),
-  KEY `administrator` (`administrator`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  `comment` text COLLATE utf8_unicode_ci
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -41,21 +39,19 @@ CREATE TABLE IF NOT EXISTS `authorizations` (
 -- Table structure for table `devices`
 --
 
-CREATE TABLE IF NOT EXISTS `devices` (
+CREATE TABLE `devices` (
   `authorization` char(20) COLLATE utf8_unicode_ci NOT NULL,
   `deveui` binary(8) NOT NULL,
   `app_id` text COLLATE utf8_unicode_ci,
   `dev_id` text COLLATE utf8_unicode_ci,
-  `pseudonym` int(11) NOT NULL AUTO_INCREMENT,
+  `pseudonym` int(11) NOT NULL,
   `created` datetime NOT NULL,
   `last_seen` datetime DEFAULT NULL,
   `latitude` decimal(10,8) DEFAULT NULL,
   `longitude` decimal(11,8) DEFAULT NULL,
   `altitude` decimal(7,2) DEFAULT NULL,
-  `comment` text COLLATE utf8_unicode_ci,
-  PRIMARY KEY (`pseudonym`),
-  UNIQUE KEY `deveui` (`deveui`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=42 ;
+  `comment` text COLLATE utf8_unicode_ci
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -63,8 +59,8 @@ CREATE TABLE IF NOT EXISTS `devices` (
 -- Table structure for table `gateways`
 --
 
-CREATE TABLE IF NOT EXISTS `gateways` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `gateways` (
+  `id` int(11) NOT NULL,
   `packet_id` int(11) NOT NULL,
   `gtw_id` text COLLATE utf8_unicode_ci NOT NULL,
   `channel` int(11) NOT NULL,
@@ -74,10 +70,40 @@ CREATE TABLE IF NOT EXISTS `gateways` (
   `latitude` decimal(10,8) DEFAULT NULL,
   `longitude` decimal(11,8) DEFAULT NULL,
   `altitude` decimal(7,2) DEFAULT NULL,
-  `time` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `packet_id` (`packet_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=507960 ;
+  `time` datetime DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `gateway_list`
+--
+
+CREATE TABLE `gateway_list` (
+  `id` int(11) NOT NULL,
+  `gtw_id` text COLLATE utf8_unicode_ci NOT NULL,
+  `channels` int(11) NOT NULL DEFAULT '0',
+  `packets` int(11) NOT NULL DEFAULT '1',
+  `latitude` decimal(10,8) DEFAULT NULL,
+  `longitude` decimal(11,8) DEFAULT NULL,
+  `altitude` decimal(7,2) DEFAULT NULL,
+  `first_seen` datetime NOT NULL,
+  `last_seen` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `link_list`
+--
+
+CREATE TABLE `link_list` (
+  `id` int(11) NOT NULL,
+  `dev_pseudonym` int(11) NOT NULL,
+  `gtw_id` text COLLATE utf8_unicode_ci NOT NULL,
+  `time` datetime NOT NULL,
+  `snr` double NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -85,8 +111,8 @@ CREATE TABLE IF NOT EXISTS `gateways` (
 -- Table structure for table `packets`
 --
 
-CREATE TABLE IF NOT EXISTS `packets` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `packets` (
+  `id` int(11) NOT NULL,
   `dev_pseudonym` int(11) NOT NULL,
   `packet_count` int(11) NOT NULL,
   `time` datetime NOT NULL,
@@ -99,46 +125,84 @@ CREATE TABLE IF NOT EXISTS `packets` (
   `gateway_count` int(11) DEFAULT NULL,
   `latitude` decimal(10,8) DEFAULT NULL,
   `longitude` decimal(11,8) DEFAULT NULL,
-  `altitude` decimal(7,2) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `dev_pseudonym` (`dev_pseudonym`),
-  KEY `time` (`time`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=255183 ;
-
--- --------------------------------------------------------
+  `altitude` decimal(7,2) DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
--- Table structure for table `preprocessed_gateway-list`
+-- Indexes for dumped tables
 --
 
-CREATE TABLE IF NOT EXISTS `preprocessed_gateway-list` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `gtw_id` text COLLATE utf8_unicode_ci NOT NULL,
-  `channels` int(11) NOT NULL,
-  `packets` int(11) NOT NULL,
-  `latitude` decimal(10,8) DEFAULT NULL,
-  `longitude` decimal(11,8) DEFAULT NULL,
-  `altitude` decimal(7,2) DEFAULT NULL,
-  `first_seen` datetime NOT NULL,
-  `last_seen` datetime NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=128 ;
-
--- --------------------------------------------------------
+--
+-- Indexes for table `authorizations`
+--
+ALTER TABLE `authorizations`
+  ADD UNIQUE KEY `authorization` (`authorization`),
+  ADD KEY `administrator` (`administrator`);
 
 --
--- Table structure for table `preprocessed_links`
+-- Indexes for table `devices`
+--
+ALTER TABLE `devices`
+  ADD PRIMARY KEY (`pseudonym`),
+  ADD UNIQUE KEY `deveui` (`deveui`);
+
+--
+-- Indexes for table `gateways`
+--
+ALTER TABLE `gateways`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `packet_id` (`packet_id`);
+ALTER TABLE `gateways` ADD FULLTEXT KEY `gtw_id` (`gtw_id`);
+
+--
+-- Indexes for table `gateway_list`
+--
+ALTER TABLE `gateway_list`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `link_list`
+--
+ALTER TABLE `link_list`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `packets`
+--
+ALTER TABLE `packets`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `dev_pseudonym` (`dev_pseudonym`),
+  ADD KEY `time` (`time`);
+
+--
+-- AUTO_INCREMENT for dumped tables
 --
 
-CREATE TABLE IF NOT EXISTS `preprocessed_links` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `dev_pseudonym` int(11) NOT NULL,
-  `gtw_id` text COLLATE utf8_unicode_ci NOT NULL,
-  `time` datetime NOT NULL,
-  `snr` double NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=256 ;
-
+--
+-- AUTO_INCREMENT for table `devices`
+--
+ALTER TABLE `devices`
+  MODIFY `pseudonym` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=81;
+--
+-- AUTO_INCREMENT for table `gateways`
+--
+ALTER TABLE `gateways`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4401774;
+--
+-- AUTO_INCREMENT for table `gateway_list`
+--
+ALTER TABLE `gateway_list`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=406;
+--
+-- AUTO_INCREMENT for table `link_list`
+--
+ALTER TABLE `link_list`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=79;
+--
+-- AUTO_INCREMENT for table `packets`
+--
+ALTER TABLE `packets`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2008516;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
