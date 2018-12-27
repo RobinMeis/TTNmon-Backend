@@ -18,6 +18,10 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") { //get registered devices
       $msg["stats"][$table["Name"]]["count"] = $table["Rows"];
     }
   }
+
+  $statement = $pdo->prepare("SELECT count(id) AS packets FROM `packets` WHERE time >= ? and time <= ?"); //Get table stats
+  $statement->execute(array(strftime("%Y-%m-%d 00:00:00", time() - 86400), strftime("%Y-%m-%d 23:59:59", time() - 86400)));
+  $msg["stats"]["packets"]["per_day"] = $statement->fetch()["packets"];
   $msg["error"] = 0;
 } else {
   $msg["error"] = -1;
