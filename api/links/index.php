@@ -9,7 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") { //Get packets
   $msg["error"] = 0;
   $pdo = new PDO('mysql:host='.$MYSQL_SERVER.';dbname='.$MYSQL_DB, $MYSQL_USER, $MYSQL_PASSWD);
 
-  $statement = $pdo->prepare("SELECT `dev_pseudonym`, `gtw_id`, `time`, `snr` FROM `link_list` WHERE `time` > UTC_TIMESTAMP() - INTERVAL 7 DAY");
+  $statement = $pdo->prepare("SELECT `dev_pseudonym`, `gtw_id`, `time`, `snr`, `gtw_lat`, `gtw_lon`, `node_lat`, `node_lon`, `distance` FROM `link_list` WHERE `time` > UTC_TIMESTAMP() - INTERVAL 7 DAY");
   $statement->execute();
 
     $msg["links"] = array();
@@ -20,6 +20,29 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") { //Get packets
       $msg["links"][$n]["gtw_id"] = $link["gtw_id"];
       $msg["links"][$n]["time"] = $link["time"];
       $msg["links"][$n]["snr"] = floatval ($link["snr"]);
+      if ($link["distance"] == null)
+        $msg["links"][$n]["distance"] = null;
+      else
+        $msg["links"][$n]["distance"] = floatval ($link["distance"]);
+      $msg["links"][$n]["coordinates"] = array();
+      $msg["links"][$n]["coordinates"]["gateway"] = array();
+      $msg["links"][$n]["coordinates"]["node"] = array();
+
+      if ($link["gtw_lat"] == null || $link["gtw_lon"] == null) {
+        $msg["links"][$n]["coordinates"]["gateway"]["lat"] = null;
+        $msg["links"][$n]["coordinates"]["gateway"]["lon"] = null;
+      } else {
+        $msg["links"][$n]["coordinates"]["gateway"]["lat"] = floatval($link["gtw_lat"]);
+        $msg["links"][$n]["coordinates"]["gateway"]["lon"] = floatval($link["gtw_lon"]);
+      }
+
+      if ($link["node_lat"] == null || $link["node_lon"] == null) {
+        $msg["links"][$n]["coordinates"]["node"]["lat"] = null;
+        $msg["links"][$n]["coordinates"]["node"]["lon"] = null;
+      } else {
+        $msg["links"][$n]["coordinates"]["node"]["lat"] = floatval($link["node_lat"]);
+        $msg["links"][$n]["coordinates"]["node"]["lon"] = floatval($link["node_lon"]);
+      }
       $n++;
     }
 
