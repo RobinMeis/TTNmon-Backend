@@ -10,9 +10,9 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") { //Get packets
   $pdo = new PDO('mysql:host='.$MYSQL_SERVER.';dbname='.$MYSQL_DB, $MYSQL_USER, $MYSQL_PASSWD);
 
   if (isset($_GET["hide_offline"]) && $_GET["hide_offline"] == TRUE) //Shows only gateways which where seen within the last two weeks
-    $statement = $pdo->prepare("SELECT `gtw_id`, `channels`, `packets`, `latitude`, `longitude`, `altitude`, `first_seen`, `last_seen` FROM `gateway_list` WHERE `last_seen` > UTC_TIMESTAMP() - INTERVAL 14 DAY");
+    $statement = $pdo->prepare("SELECT `gtw_id`, `channels`, `packets`, `latitude`, `longitude`, `altitude`, `first_seen`, `last_seen`, `ttn_description`, `ttn_brand`, `ttn_model`, `ttn_username` FROM `gateway_list` WHERE `last_seen` > UTC_TIMESTAMP() - INTERVAL 14 DAY");
   else
-    $statement = $pdo->prepare("SELECT `gtw_id`, `channels`, `packets`, `latitude`, `longitude`, `altitude`, `first_seen`, `last_seen` FROM `gateway_list`");
+    $statement = $pdo->prepare("SELECT `gtw_id`, `channels`, `packets`, `latitude`, `longitude`, `altitude`, `first_seen`, `last_seen`, `ttn_description`, `ttn_brand`, `ttn_model`, `ttn_username` FROM `gateway_list`");
 
   $statement->execute();
 
@@ -37,6 +37,10 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") { //Get packets
       }
       $msg["gateways"][$n]["first_seen"] = $gateway["first_seen"];
       $msg["gateways"][$n]["last_seen"] = $gateway["last_seen"];
+      $msg["gateways"][$n]["description"] = $gateway["ttn_description"];
+      $msg["gateways"][$n]["brand"] = $gateway["ttn_brand"];
+      $msg["gateways"][$n]["model"] = $gateway["ttn_model"];
+      $msg["gateways"][$n]["username"] = $gateway["ttn_username"];
       $n++;
     }
 
