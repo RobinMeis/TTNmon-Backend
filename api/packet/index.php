@@ -80,6 +80,11 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") { //Get packets
         else
           $msg["gateways"][$n]["distance"] = floatval($gateway["distance"]);
       }
+
+      $gtw_name = $pdo->prepare("SELECT `ttn_description` FROM `gateway_list` WHERE gtw_id LIKE ? LIMIT 1");
+      $gtw_name->execute(array($msg["gateways"][$n]["gtw_id"]));
+      $gtw_name = $gtw_name->fetch();
+      $msg["gateways"][$n]["description"] = $gtw_name["ttn_description"];
       $n++;
     }
   } else {
