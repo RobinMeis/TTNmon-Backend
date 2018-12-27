@@ -87,7 +87,7 @@ if (isset($headers["Authorization"])) {
   if (isset($data["metadata"]["modulation"])) {
     if ($data["metadata"]["modulation"] == "LORA") {
       if (check_array($data, array("hardware_serial", "metadata", "dev_id", "counter")) && check_array($data["metadata"], array("time", "frequency", "data_rate", "coding_rate", "gateways"))) { //Check packet data for required fields
-        if ($LOG_WEBHOOK == TRUE && strtoupper($data["hardware_serial"]) == $LOG_DEVEUI)
+        if ($LOG_WEBHOOK == TRUE && strtoupper($data["hardware_serial"]) == strtoupper($LOG_DEVEUI))
           file_put_contents("logging/". $pseudonym."_".gmdate("Y-m-d_H-i-s") .".json", json_encode($data)); //Log last request if enabled
 
         foreach ($data["metadata"]["gateways"] as $key=>$gateway) { //Check if all required fields for gateway were transmitted
@@ -140,6 +140,7 @@ if (isset($headers["Authorization"])) {
         $statement = $pdo->prepare("INSERT INTO packets (`dev_pseudonym`, `packet_count`, `time`, `frequency`, `modulation`, `SF`, `BW`, `CR_k`, `CR_n`, `gateway_count`, `latitude`, `longitude`, `altitude`) VALUES (:dev_pseudonym, :packet_count, :pkt_time, :frequency, :modulation, :SF, :BW, :CR_k, :CR_n, :gateway_count, :latitude, :longitude, :altitude)");
         $statement->execute($mysql_data);
         $packet_id = $pdo->lastInsertId();
+        file_put_contents("inserts.txt", $packet_id."\n", FILE_APPEND);
         foreach ($data["metadata"]["gateways"] as $gateway) {
           $mysql_data = array();
           $mysql_data['packet_id'] = $packet_id;
@@ -167,9 +168,10 @@ if (isset($headers["Authorization"])) {
           $mysql_data["longitude"] = $gtw_longitude;
           $mysql_data["altitude"] = $gtw_latitude;
           if ($gtw_latitude == null || $gtw_longitude == null || $data["metadata"]["latitude"] == null || $data["metadata"]["longitude"] == null) //Calculate distance between node and gateway if available
-            $mysql_data["distance"] = null;
+            $distance = null;
           else
-            $mysql_data["distance"] = vincentyGreatCircleDistance($gtw_latitude, $gtw_longitude, $data["metadata"]["latitude"], $data["metadata"]["longitude"]);
+            $distance = vincentyGreatCircleDistance($gtw_latitude, $gtw_longitude, $data["metadata"]["latitude"], $data["metadata"]["longitude"]);
+          $mysql_data["distance"] = $distance;
 
           $statement = $pdo->prepare("INSERT INTO gateways (`packet_id`, `gtw_id`, `channel`, `rssi`, `snr`, `rf_chain`, `latitude`, `longitude`, `altitude`, `time`, `distance`) VALUES (:packet_id, :gtw_id, :channel, :rssi, :snr, :rf_chain, :latitude, :longitude, :altitude, :time, :distance)");
           $statement->execute($mysql_data);
@@ -195,16 +197,29 @@ if (isset($headers["Authorization"])) {
           $mysql_data = array(); //Try to update link between node and gateway
           $mysql_data['gtw_id'] = $gateway["gtw_id"];
           $mysql_data['dev_pseudonym'] = $pseudonym;
-          $mysql_data['snr'] = -$gateway["snr"];
-          $statement = $pdo->prepare("UPDATE link_list SET `snr` = :snr, `time` = UTC_TIMESTAMP() WHERE `gtw_id` = :gtw_id and dev_pseudonym = :dev_pseudonym");
+          $mysql_data['snr'] = $gateway["snr"];
+          $mysql_data['rssi'] = $gateway["rssi"];
+          $mysql_data['gtw_lat'] = $gtw_latitude;
+          $mysql_data['gtw_lon'] = $gtw_longitude;
+          $mysql_data['node_lat'] = $data["metadata"]["latitude"];
+          $mysql_data['node_lon'] = $data["metadata"]["longitude"];
+          $mysql_data['distance'] = $distance;
+          $statement = $pdo->prepare("UPDATE link_list SET `snr` = :snr, `rssi` = :rssi, `time` = UTC_TIMESTAMP(), gtw_lat = :gtw_lat, gtw_lon = :gtw_lon, node_lat = :node_lat, node_lon = :node_lon, distance = :distance  WHERE `gtw_id` = :gtw_id and dev_pseudonym = :dev_pseudonym");
           $statement->execute($mysql_data);
 
           if ($statement->rowCount() == 0) { //link is not yet in link list, add it
             $mysql_data = array();
             $mysql_data['gtw_id'] = $gateway["gtw_id"];
             $mysql_data['dev_pseudonym'] = $pseudonym;
-            $mysql_data['snr'] = -$gateway["snr"];
-            $statement = $pdo->prepare("INSERT INTO link_list (`gtw_id`, `dev_pseudonym`, `time`, `snr`) VALUES (:gtw_id, :dev_pseudonym, UTC_TIMESTAMP(), :snr)");
+            $mysql_data['snr'] = $gateway["snr"];
+            $mysql_data['rssi'] = $gateway["rssi"];
+            $mysql_data['gtw_lat'] = $gtw_latitude;
+            $mysql_data['gtw_lon'] = $gtw_longitude;
+            $mysql_data['node_lat'] = $data["metadata"]["latitude"];
+            $mysql_data['node_lon'] = $data["metadata"]["longitude"];
+            $mysql_data['distance'] = $distance;
+
+            $statement = $pdo->prepare("INSERT INTO link_list (`gtw_id`, `dev_pseudonym`, `time`, `snr`, `rssi`, `gtw_lat`, `gtw_lon`, `node_lat`, `node_lon`, `distance`) VALUES (:gtw_id, :dev_pseudonym, UTC_TIMESTAMP(), :snr, :rssi, :gtw_lat, :gtw_lon, :node_lat, :node_lon, :distance)");
             $statement->execute($mysql_data);
           }
         }
