@@ -12,6 +12,8 @@ Pseudonym of device. NOT DevEUI. If Pseudonym is unknown it can be queried using
 Date and time of last packet. Encoded as YYYY-MM-DD_HH-MM-SS (UTC)
 #### date_end
 Date and time of last packet. Encoded as YYYY-MM-DD_HH-MM-SS (UTC)
+#### timezone_offset
+Timezone offset in minutes (optional)
 
 ### Returns
 JSON encoded
