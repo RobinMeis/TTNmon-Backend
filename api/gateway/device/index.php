@@ -6,13 +6,18 @@ header("Access-Control-Allow-Origin: *");
 $msg = array();
 if ($_SERVER['REQUEST_METHOD'] == "GET") { //Get packets
   if (isset($_GET["date_start"]) && isset($_GET["date_end"]) && isset($_GET["dev_pseudonym"]) && isset($_GET["gtw_id"])) {
+    if (isset($_GET["timezone_offset"]))
+      $timezoneOffset = intval($_GET["timezone_offset"]);
+    else
+      $timezoneOffset = 0;
+
     $msg["msg_en"] = "The following packets were received";
     $msg["error"] = 0;
     $pdo = new PDO('mysql:host='.$MYSQL_SERVER.';dbname='.$MYSQL_DB, $MYSQL_USER, $MYSQL_PASSWD);
 
     //Get packets for the specified device and gateway
-    $statement = $pdo->prepare("SELECT DATE_FORMAT( packets.`time` , '%Y-%m-%dT%TZ' ) AS `time`, channel, rssi, snr, gateways.latitude, gateways.longitude, gateways.altitude FROM gateways LEFT JOIN (packets) ON (packets.id = gateways.packet_id) WHERE packets.time >= ? and packets.time <= ? and dev_pseudonym = ? and gtw_id = ?");
-    $statement->execute(array($_GET["date_start"], $_GET["date_end"], $_GET["dev_pseudonym"], $_GET["gtw_id"]));
+    $statement = $pdo->prepare("SELECT DATE_FORMAT( packets.`time` , '%Y-%m-%dT%TZ' ) AS `time`, channel, rssi, snr, gateways.latitude, gateways.longitude, gateways.altitude FROM gateways LEFT JOIN (packets) ON (packets.id = gateways.packet_id) WHERE packets.time >= DATE_ADD(?, INTERVAL ? MINUTE) and packets.time <= DATE_ADD(?, INTERVAL ? MINUTE) and dev_pseudonym = ? and gtw_id = ?");
+    $statement->execute(array($_GET["date_start"], $timezoneOffset, $_GET["date_end"], $timezoneOffset, $_GET["dev_pseudonym"], $_GET["gtw_id"]));
 
     $msg["packets"] = array();
     $n = 0;

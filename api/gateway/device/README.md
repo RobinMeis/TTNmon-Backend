@@ -12,6 +12,8 @@ Date and time of last packet. Encoded as YYYY-MM-DD_HH-MM-SS (UTC)
 Date and time of last packet. Encoded as YYYY-MM-DD_HH-MM-SS (UTC)
 #### gtw_id
 Gateway ID
+#### timezone_offset
+Timezone offset in minutes (optional)
 
 ### Returns
 JSON encoded
