@@ -18,39 +18,62 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") { //get registered devices
       $msg["msg_en"] = "Invalid authorization token";
     } else { //Auth OK
       $administrator = $administrator["administrator"];
-      $msg["devices"] = array();
 
-      if ($administrator == 1) //If administrator: Allowed to __see__ any device
-        $statement = $pdo->prepare("SELECT deveui, app_id, dev_id, pseudonym, created, last_seen, latitude, longitude, altitude FROM devices");
-      else
-        $statement = $pdo->prepare("SELECT deveui, app_id, dev_id, pseudonym, created, last_seen, latitude, longitude, altitude FROM devices WHERE authorization = ?");
-      $statement->execute(array($_GET["auth_token"]));
-
-      $n = 0;
-      while ($device = $statement->fetch()) {
-        $msg["devices"][$n]["pseudonym"] = $device["pseudonym"];
-        $msg["devices"][$n]["deveui"] = bin2hex($device["deveui"]);
-        $msg["devices"][$n]["app_id"] = $device["app_id"];
-        $msg["devices"][$n]["dev_id"] = $device["dev_id"];
-        $msg["devices"][$n]["created"] = $device["created"];
-        $msg["devices"][$n]["last_seen"] = $device["last_seen"];
-        if ($device["latitude"] == null || $device["longitude"] == null) {
-          $msg["devices"][$n]["latitude"] = null;
-          $msg["devices"][$n]["longitude"] = null;
-          $msg["devices"][$n]["altitude"] = null;
+      if (isset($_GET["pseudonym"])) {
+        if ($administrator == 1) { //If administrator: Allowed to __see__ any device
+          $statement = $pdo->prepare("SELECT deveui, app_id, dev_id FROM devices WHERE pseudonym = ?");
+          $statement->execute(array($_GET["pseudonym"]));
         } else {
-          $msg["devices"][$n]["latitude"] = floatval($device["latitude"]);
-          $msg["devices"][$n]["longitude"] = floatval($device["longitude"]);
-          if ($device["altitude"] == null)
-            $msg["devices"][$n]["altitude"] = null;
-          else
-            $msg["devices"][$n]["altitude"] = floatval($device["altitude"]);
+          $statement = $pdo->prepare("SELECT deveui, app_id, dev_id FROM devices WHERE pseudonym = ? and authorization = ?");
+          $statement->execute(array($_GET["pseudonym"], $_GET["auth_token"]));
         }
-        $n++;
-      }
+        $device = $statement->fetch();
+        if (empty($device)) {
+          $msg["error"] = 1;
+          $msg["msg_en"] = "Device not found or unauthorized";
+        } else {
+          $msg["deveui"] = bin2hex($device["deveui"]);
+          $msg["app_id"] = $device["app_id"];
+          $msg["dev_id"] = $device["dev_id"];
+          $msg["error"] = 0;
+          $msg["msg_en"] = "Device found";
+        }
+      } else {
+        $msg["devices"] = array();
 
-      $msg["error"] = 0;
-      $msg["msg_en"] = "The following devices are currently registered";
+        if ($administrator == 1) {//If administrator: Allowed to __see__ any device
+          $statement = $pdo->prepare("SELECT deveui, app_id, dev_id, pseudonym, created, last_seen, latitude, longitude, altitude FROM devices");
+          $statement->execute();
+        } else {
+          $statement = $pdo->prepare("SELECT deveui, app_id, dev_id, pseudonym, created, last_seen, latitude, longitude, altitude FROM devices WHERE authorization = ?");
+          $statement->execute(array($_GET["auth_token"]));
+        }
+        $n = 0;
+        while ($device = $statement->fetch()) {
+          $msg["devices"][$n]["pseudonym"] = $device["pseudonym"];
+          $msg["devices"][$n]["deveui"] = bin2hex($device["deveui"]);
+          $msg["devices"][$n]["app_id"] = $device["app_id"];
+          $msg["devices"][$n]["dev_id"] = $device["dev_id"];
+          $msg["devices"][$n]["created"] = $device["created"];
+          $msg["devices"][$n]["last_seen"] = $device["last_seen"];
+          if ($device["latitude"] == null || $device["longitude"] == null) {
+            $msg["devices"][$n]["latitude"] = null;
+            $msg["devices"][$n]["longitude"] = null;
+            $msg["devices"][$n]["altitude"] = null;
+          } else {
+            $msg["devices"][$n]["latitude"] = floatval($device["latitude"]);
+            $msg["devices"][$n]["longitude"] = floatval($device["longitude"]);
+            if ($device["altitude"] == null)
+              $msg["devices"][$n]["altitude"] = null;
+            else
+              $msg["devices"][$n]["altitude"] = floatval($device["altitude"]);
+          }
+          $n++;
+        }
+
+        $msg["error"] = 0;
+        $msg["msg_en"] = "The following devices are currently registered";
+      }
     }
   } else { //Parameters missing
     $msg["error"] = 2;
