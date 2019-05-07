@@ -17,6 +17,7 @@ function findNetID($pdo, $devaddr) {
 $pdo = new PDO('mysql:host='.$MYSQL_SERVER.';dbname='.$MYSQL_DB, $MYSQL_USER, $MYSQL_PASSWD);
 
 $data = file_get_contents('php://input'); //Read and parse input
+$json = json_decode($data, True);
 
 $requirements = array("SF", "BW", "snr", "cr_k", "modulation", "cr_n", "type", "payload_size", "frequency", "channel", "time", "rssi", "gtw_addr", "gtw_id", "fcount", "adr", "ack", "fport", "airtime", "time");
 
