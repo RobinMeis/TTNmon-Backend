@@ -26,7 +26,7 @@ foreach ($json["pkts"] as $packet) {
     if (!isset($packet[$required])) {
       print ($required . " missing!");
       $string = json_encode($packet);
-      file_put_contents("invalid_packets.log", $string, FILE_APPEND);
+      file_put_contents("invalid_packets.log", $string."\n", FILE_APPEND);
       break;
     }
   }
@@ -86,7 +86,7 @@ foreach ($json["pkts"] as $packet) {
     }
   } else { //Unsupported Type
     $string = json_encode($packet);
-    file_put_contents("unsupported_packets.log", $string, FILE_APPEND);
+    file_put_contents("unsupported_packets.log", $string."\n", FILE_APPEND);
   }
 }
 ?>
