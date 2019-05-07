@@ -15,11 +15,8 @@ function findNetID($pdo, $devaddr) {
 }
 
 $pdo = new PDO('mysql:host='.$MYSQL_SERVER.';dbname='.$MYSQL_DB, $MYSQL_USER, $MYSQL_PASSWD);
-print(findNetID($pdo, "26012025"));
 
 $data = file_get_contents('php://input'); //Read and parse input
-file_put_contents("log.json", $data);
-$json = json_decode($data, True);
 
 $requirements = array("SF", "BW", "snr", "cr_k", "modulation", "cr_n", "type", "payload_size", "frequency", "channel", "time", "rssi", "gtw_addr", "gtw_id", "fcount", "adr", "ack", "fport", "airtime", "time");
 
@@ -28,6 +25,8 @@ foreach ($json["pkts"] as $packet) {
   foreach ($requirements as $required) { //Check if all required fields exist in packet
     if (!isset($packet[$required])) {
       print ($required . " missing!");
+      $string = json_encode($packet);
+      file_put_contents("invalid_packets.log", $string, FILE_APPEND);
       break;
     }
   }
@@ -86,9 +85,8 @@ foreach ($json["pkts"] as $packet) {
       $statement->execute($data);
     }
   } else { //Unsupported Type
-    continue;
+    $string = json_encode($packet);
+    file_put_contents("unsupported_packets.log", $string, FILE_APPEND);
   }
-  $string = json_encode($packet);
-  file_put_contents("unsupported_packets.log", $string, FILE_APPEND);
 }
 ?>
