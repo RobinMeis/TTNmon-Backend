@@ -88,5 +88,7 @@ foreach ($json["pkts"] as $packet) {
   } else { //Unsupported Type
     continue;
   }
+  $string = json_encode($packet);
+  file_put_contents("unsupported_packets.log", $string, FILE_APPEND);
 }
 ?>
