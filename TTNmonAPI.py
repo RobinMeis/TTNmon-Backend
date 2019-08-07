@@ -28,9 +28,6 @@ with TTNmonAPI.app_context(): #Setup App
       config["MySQL"]["pool_size"]
     )
 
-    print(config.sections())
-
-
 @TTNmonAPI.route("/")
 def hello():
     response = "This is the TTNmon API. The frontend is located <a href=\"%s\">here</a>" % (frontend_url,)

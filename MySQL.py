@@ -1,5 +1,5 @@
 import mysql.connector
-from mysql.connector import pooling
+from mysql.connector import pooling, ClientFlag
 import string
 import random
 
@@ -8,6 +8,11 @@ class MySQL:
         self.cnxpool = mysql.connector.pooling.MySQLConnectionPool(pool_name = pool_name,
                                                                     pool_size = int(pool_size),
                                                                     host = host,
+                                                                    ssl_ca = ca_cert,
+                                                                    client_flags = [ClientFlag.SSL],
+                                                                    ssl_verify_cert = True,
+                                                                    ssl_verify_identity = True,
+                                                                    ssl_disabled = False,
                                                                     user = username,
                                                                     password = password,
                                                                     database = database,
