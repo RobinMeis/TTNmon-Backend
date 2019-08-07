@@ -5,7 +5,7 @@ from MySQL import MySQL
 from Influx import Influx
 
 config = configparser.ConfigParser() #Load config
-config.read('sample.conf')
+config.read('TTNmon.conf')
 
 conf = config["MySQL"]
 mySQL = MySQL(
