@@ -12,7 +12,9 @@ mySQL = MySQL(
   config["MySQL"]["host"],
   config["MySQL"]["username"],
   config["MySQL"]["password"],
-  config["MySQL"]["ca_cert"]
+  config["MySQL"]["ca_cert"],
+  config["MySQL"]["pool_name"],
+  config["MySQL"]["pool_size"]
 )
 
 influx = Influx(
