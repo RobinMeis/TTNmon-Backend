@@ -12,7 +12,6 @@ mySQL = MySQL(
   config["MySQL"]["host"],
   config["MySQL"]["username"],
   config["MySQL"]["password"],
-  config["MySQL"]["encryption"],
   config["MySQL"]["ca_cert"]
 )
 
@@ -20,7 +19,6 @@ influx = Influx(
   config["Influx"]["host"],
   config["Influx"]["username"],
   config["Influx"]["password"],
-  config["Influx"]["encryption"],
   config["Influx"]["ca_cert"]
 )
 

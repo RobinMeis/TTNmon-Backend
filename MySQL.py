@@ -1,3 +1,3 @@
 class MySQL:
-    def __init__(self, host, username, password, encryption, ca_cert):
+    def __init__(self, host, username, password, ca_cert):
         print("mysql")
