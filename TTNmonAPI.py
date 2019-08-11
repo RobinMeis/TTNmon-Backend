@@ -40,17 +40,17 @@ def hello():
 @TTNmonAPI.route("/webhook", methods=['POST'])
 def webhook():
     print(request.json)
-    response = jsonify(error_code=0, msg_en="Strange, you should never ever see this page. Did you try to send fake data? Well, it's your device!")
+    response = jsonify(error=0, msg_en="Strange, you should never ever see this page. Did you try to send fake data? Well, it's your device!")
     return response
 
 @TTNmonAPI.route("/api/token", methods=['GET', 'POST'])
 def createToken():
     token = mySQL.createToken()
     if token == None:
-        response = jsonify(error_code=1,
+        response = jsonify(error=1,
                         msg_en="Token generation failed. Please retry later")
     else:
-        response = jsonify(error_code=0,
+        response = jsonify(error=0,
                         msg_en="Your new token has been created",
                         auth_token=token)
     return response
