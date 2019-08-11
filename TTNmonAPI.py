@@ -24,6 +24,9 @@ with TTNmonAPI.app_context(): #Setup App
       config["MySQL"]["password"],
       config["MySQL"]["database"],
       config["MySQL"]["pool_reset_session"],
+      config["MySQL"]["ssl_verify_cert"],
+      config["MySQL"]["ssl_verify_identity"],
+      config["MySQL"]["ssl_disabled"],
       config["MySQL"]["ca_cert"],
       config["MySQL"]["pool_name"],
       config["MySQL"]["pool_size"]
