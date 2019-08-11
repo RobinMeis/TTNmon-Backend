@@ -6,7 +6,7 @@ import random
 class MySQL:
     def __init__(self, host, username, password, database, pool_reset_session, ssl_verify_cert, ssl_verify_identity, ssl_disabled, ca_cert, pool_name, pool_size):
         self.cnxpool = mysql.connector.pooling.MySQLConnectionPool(pool_name = pool_name,
-                                                                    pool_size = int(pool_size),
+                                                                    pool_size = pool_size,
                                                                     pool_reset_session=pool_reset_session,
                                                                     host = host,
                                                                     ssl_ca = ca_cert,
