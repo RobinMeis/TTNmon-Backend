@@ -1,4 +1,5 @@
 from flask import Flask, g, make_response, jsonify, request
+from flask_cors import CORS
 import configparser
 
 from MySQL import MySQL
@@ -15,6 +16,7 @@ influx = Influx(
 )
 
 TTNmonAPI = Flask(__name__) #Initialize App
+CORS(TTNmonAPI)
 with TTNmonAPI.app_context(): #Setup App
     frontend_url = config["General"]["frontend_url"]
 
