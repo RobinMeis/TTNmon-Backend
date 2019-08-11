@@ -7,6 +7,7 @@ class MySQL:
     def __init__(self, host, username, password, database, ca_cert, pool_name, pool_size):
         self.cnxpool = mysql.connector.pooling.MySQLConnectionPool(pool_name = pool_name,
                                                                     pool_size = int(pool_size),
+                                                                    pool_reset_session=False,
                                                                     host = host,
                                                                     ssl_ca = ca_cert,
                                                                     client_flags = [ClientFlag.SSL],
