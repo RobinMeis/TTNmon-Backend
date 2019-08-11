@@ -1,4 +1,4 @@
-from flask import Flask, g, make_response, jsonify
+from flask import Flask, g, make_response, jsonify, request
 import configparser
 
 from MySQL import MySQL
@@ -32,6 +32,12 @@ with TTNmonAPI.app_context(): #Setup App
 def hello():
     response = "This is the TTNmon API. The frontend is located <a href=\"%s\">here</a>" % (frontend_url,)
     return make_response(response, 200)
+
+@TTNmonAPI.route("/webhook", methods=['POST'])
+def webhook():
+    print(request.json)
+    response = jsonify(error_code=0, msg_en="Strange, you should never ever see this page. Did you try to send fake data? Well, it's your device!")
+    return response
 
 @TTNmonAPI.route("/api/token", methods=['GET', 'POST'])
 def createToken():
