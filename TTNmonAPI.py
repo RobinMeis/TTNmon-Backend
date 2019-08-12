@@ -1,11 +1,13 @@
 from flask import Flask, g, make_response, jsonify, request
 from flask_cors import CORS
 import configparser
+import json
 
 from MySQL import MySQL
 from Influx import Influx
 
 import metadata.packet
+import log
 
 config = configparser.ConfigParser() #Load config
 config.read('TTNmon.conf')
@@ -21,6 +23,11 @@ TTNmonAPI = Flask(__name__) #Initialize App
 CORS(TTNmonAPI)
 with TTNmonAPI.app_context(): #Setup App
     frontend_url = config["General"]["frontend_url"]
+
+    log = log.logging(config["Logging"]["logdir"])
+    log.general.enabled = config["Logging"].getboolean("log_general_events")
+    log.packets.enabled = config["Logging"].getboolean("log_all_packets")
+    log.invalid_packets.enabled = config["Logging"].getboolean("log_invalid_packets")
 
     mySQL = MySQL(
       config["MySQL"]["host"],
@@ -48,9 +55,12 @@ def webhook():
     except Exception as e:
         print(str(e))
         response = jsonify(error=1, msg_en="Invalid data!")
+        log.invalid_packets.logWrite(json.encode(request.json))
         return response
     else:
         response = jsonify(error=0, msg_en="Strange, you should never ever see this page. Did you try to send fake data? Well, it's your device!")
+        if log.packets.enabled:
+            log.packets.logWrite(json.encode(request.json))
         return response
 
 @TTNmonAPI.route("/api/token", methods=['GET', 'POST'])
