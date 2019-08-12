@@ -18,6 +18,15 @@ class device:
         self.devID = packet["dev_id"]
         self.devEUI = packet["hardware_serial"]
 
+    def fromDB(self, row):
+        self.location.fromDB(row)
+        self.pseudonym = row["pseudonym"]
+        self.appID = row["appID"]
+        self.devID = row["devID"]
+        self.devEUI = row["devEUI"]
+        self.created = row["created"]
+        self.lastSeen = row["lastSeen"]
+
     #pseudonym getter/setter
     @property
     def pseudonym(self):
