@@ -71,12 +71,13 @@ class MySQL:
         cur.execute(stmt, (auth_token, device.devEUI))
         result = cur.fetchone()
         cnx.close()
-        device.pseudonym = result["pseudonym"]
-        device.created = result["created"]
-        device.lastSeen = result["lastSeen"]
+
         if (result == None):
             return None
         else:
+            device.pseudonym = result["pseudonym"]
+            device.created = result["created"]
+            device.lastSeen = result["lastSeen"]
             return result["pseudonym"]
 
     def createDevice(self, auth_token, device):
@@ -126,8 +127,21 @@ class MySQL:
         return pseudonym
 
     def removeDevice(self, auth_token, device):
-        pass
-
+        cnx = self.cnxpool.get_connection()
+        cnx.commit()
+        cur = cnx.cursor()
+        stmt = """DELETE FROM `devices` WHERE
+                    `authorization` = %s and
+                    `devEUI` = %s
+                """
+        cur.execute(stmt, (auth_token, device.devEUI))
+        cnx.commit()
+        cnx.close()
+        
+        if cur.rowcount == 0:
+            return False
+        else:
+            return True
 
     def deviceSeen(self, device):
         pass
