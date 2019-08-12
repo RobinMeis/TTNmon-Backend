@@ -59,14 +59,12 @@ def webhook():
         log.invalid_packets.logWrite("%s\n\n%s" % (e, json.dumps(request.json)))
         return response,400
     else:
-        response = jsonify(error=0, msg_en="Strange, you should never ever see this page. Did you try to send fake data? Well, it's your device!")
         if log.packets.enabled:
             log.packets.logWrite(json.dumps(request.json))
 
         pseudonym = mySQL.getPseudonym(authorization, packet.device)
         if pseudonym == None:
             if mySQL.checkToken(authorization):
-                print("create device")
                 pseudonym = mySQL.createDevice(authorization, packet.device)
                 if pseudonym == None: #Creation failed
                     log.general.logAppend("Creation of devEUI %s using authorization %s failed because of duplicate entry" % (packet.device.devEUI, authorization,))
@@ -77,7 +75,9 @@ def webhook():
                 response = jsonify(error=2, msg_en="Authorization failed")
                 return response,403
 
+
         print("ToDo: Do something with influx, this is pseudonym" + str(pseudonym))
+        response = jsonify(error=0, msg_en="Success!")
         return response
 
 @TTNmonAPI.route("/api/token", methods=['GET', 'POST'])
