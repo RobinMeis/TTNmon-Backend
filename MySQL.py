@@ -132,16 +132,42 @@ class MySQL:
         cur = cnx.cursor()
         stmt = """DELETE FROM `devices` WHERE
                     `authorization` = %s and
-                    `devEUI` = %s
-                """
+                    `devEUI` = %s"""
         cur.execute(stmt, (auth_token, device.devEUI))
         cnx.commit()
         cnx.close()
-        
+
         if cur.rowcount == 0:
             return False
         else:
             return True
 
-    def deviceSeen(self, device):
-        pass
+    def updateDevice(self, auth_token, device):
+        cnx = self.cnxpool.get_connection()
+        cnx.commit()
+        cur = cnx.cursor()
+        stmt = """UPDATE `devices` SET
+                        `lastSeen` = UTC_TIMESTAMP(),
+                        `latitude` = %(latitude)s,
+                        `longitude` = %(longitude)s,
+                        `altitude` = %(altitude)s
+                    WHERE
+                        `authorization` = %(authorization)s and
+                        `devEUI` = %(devEUI)s"""
+
+        values = {
+            "authorization": auth_token,
+            "devEUI": device.devEUI,
+            "latitude": device.location.latitude,
+            "longitude": device.location.longitude,
+            "altitude": device.location.altitude
+        }
+
+        cur.execute(stmt, values)
+        cnx.commit()
+        cnx.close()
+
+        if cur.rowcount == 0:
+            return False
+        else:
+            return True

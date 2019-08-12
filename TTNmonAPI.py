@@ -74,7 +74,8 @@ def webhook():
                 log.general.logAppend("Authorization to webhook using %s failed" % (authorization,))
                 response = jsonify(error=2, msg_en="Authorization failed")
                 return response,403
-
+        else:
+            mySQL.updateDevice(authorization, packet.device)
 
         print("ToDo: Do something with influx, this is pseudonym" + str(pseudonym))
         response = jsonify(error=0, msg_en="Success!")
