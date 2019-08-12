@@ -51,6 +51,7 @@ def hello():
 @TTNmonAPI.route("/webhook", methods=['POST'])
 def webhook():
     authorization = request.headers.get('Authorization')
+    mySQL.getDevices(authorization)
     packet = metadata.packet.packet()
     try:
         packet.fromTTN(request.json)
@@ -92,3 +93,33 @@ def createToken():
                         msg_en="Your new token has been created",
                         auth_token=token)
     return response
+
+@TTNmonAPI.route("/api/getDevices", methods=['GET'])
+def getDevices():
+    authorization = request.headers.get('Authorization')
+    authorized = mySQL.checkToken(authorization)
+
+    if not authorized:
+        response = jsonify(error=1, msg_en="Invalid authorization token")
+        return response,403
+    else:
+        response = {}
+        response["error"] = 0
+        response["msg_en"] = "The following devices are currently registered"
+        response["devices"] = []
+
+        devices = mySQL.getDevices(authorization)
+        for device in devices:
+            dev = {}
+            dev["pseudonym"] = device.pseudonym
+            dev["devEUI"] = device.devEUI
+            dev["appID"] = device.appID
+            dev["devID"] = device.devID
+            dev["created"] = device.created.strftime("%Y-%m%d %H:%M:%S")
+            dev["lastSeen"] = device.lastSeen.strftime("%Y-%m%d %H:%M:%S")
+            dev["latitude"] = device.location.latitude
+            dev["longitude"] = device.location.longitude
+            dev["altitude"] = device.location.altitude
+            response["devices"].append(dev)
+        response = jsonify(response)
+        return response
