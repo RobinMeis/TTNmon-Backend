@@ -43,9 +43,15 @@ def hello():
 
 @TTNmonAPI.route("/webhook", methods=['POST'])
 def webhook():
-    packet = metadata.packet.packet(request.json)
-    response = jsonify(error=0, msg_en="Strange, you should never ever see this page. Did you try to send fake data? Well, it's your device!")
-    return response
+    try:
+        packet = metadata.packet.packet(request.json)
+    except Exception, e:
+        print(str(e))
+        response = jsonify(error=1, msg_en="Invalid data!")
+        return response
+    else:
+        response = jsonify(error=0, msg_en="Strange, you should never ever see this page. Did you try to send fake data? Well, it's your device!")
+        return response
 
 @TTNmonAPI.route("/api/token", methods=['GET', 'POST'])
 def createToken():
