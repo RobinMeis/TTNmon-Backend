@@ -5,6 +5,8 @@ import configparser
 from MySQL import MySQL
 from Influx import Influx
 
+import metadata.packet
+
 config = configparser.ConfigParser() #Load config
 config.read('TTNmon.conf')
 
@@ -41,7 +43,7 @@ def hello():
 
 @TTNmonAPI.route("/webhook", methods=['POST'])
 def webhook():
-    print(request.json)
+    packet = metadata.packet.packet(request.json)
     response = jsonify(error=0, msg_en="Strange, you should never ever see this page. Did you try to send fake data? Well, it's your device!")
     return response
 
