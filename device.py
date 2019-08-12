@@ -14,8 +14,8 @@ class device:
 
     def fromTTN(self, packet):
         self.location.fromTTN(packet)
-        self.appId = packet["app_id"]
-        self.devId = packet["dev_id"]
+        self.appID = packet["app_id"]
+        self.devID = packet["dev_id"]
         self.devEUI = packet["hardware_serial"]
 
     #pseudonym getter/setter
@@ -24,7 +24,7 @@ class device:
         return self.__pseudonym
 
     @pseudonym.setter
-    def devEUI(self, pseudonym):
+    def pseudonym(self, pseudonym):
         if (isinstance(pseudonym, int)): #Store devEUI as string
             if (pseudonym >= 0): #must be positive
                 self.__pseudonym = pseudonym
@@ -60,7 +60,7 @@ class device:
                 self.__created = dateutil.parser.parse(created)
             except ValueError: #No created provided
                 self.__created = None
-        elif (isinstance(created, datetime)): #Copy datetime
+        elif (isinstance(created, datetime.datetime)): #Copy datetime
             self.__created = created
         else:
             raise ValueError("Invalid type of created. Must be str or datetime")
@@ -77,7 +77,7 @@ class device:
                 self.__lastSeen = dateutil.parser.parse(lastSeen)
             except ValueError: #No lastSeen provided
                 self.__lastSeen = None
-        elif (isinstance(lastSeen, datetime)): #Copy datetime
+        elif (isinstance(lastSeen, datetime.datetime)): #Copy datetime
             self.__lastSeen = lastSeen
         else:
             raise ValueError("Invalid type of lastSeen. Must be str or datetime")

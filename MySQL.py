@@ -39,3 +39,95 @@ class MySQL:
             cnx.commit()
         cnx.close()
         return token
+
+    def checkToken(self, auth_token):
+        cnx = self.cnxpool.get_connection()
+        cur = cnx.cursor(dictionary=True)
+        stmt = """SELECT
+                    `created`
+                FROM `authorizations` WHERE
+                    `token` = %s"""
+        cur.execute(stmt, (auth_token,))
+        result = cur.fetchone()
+        cnx.close()
+
+        if result == None:
+            return False
+        else:
+            return result
+
+    def getPseudonym(self, auth_token, device):
+        cnx = self.cnxpool.get_connection()
+        cnx.commit()
+        cur = cnx.cursor(dictionary=True)
+        stmt = """SELECT
+                    `pseudonym`,
+                    `created`,
+                    `lastSeen`
+                FROM `devices` WHERE
+                    `authorization` = %s and
+                    `devEUI` = %s
+                LIMIT 1"""
+        cur.execute(stmt, (auth_token, device.devEUI))
+        result = cur.fetchone()
+        cnx.close()
+        device.pseudonym = result["pseudonym"]
+        device.created = result["created"]
+        device.lastSeen = result["lastSeen"]
+        if (result == None):
+            return None
+        else:
+            return result["pseudonym"]
+
+    def createDevice(self, auth_token, device):
+        cnx = self.cnxpool.get_connection()
+        cur = cnx.cursor()
+        stmt = """INSERT INTO `devices` (
+                    `authorization`,
+                    `devEUI`,
+                    `devID`,
+                    `appID`,
+                    `created`,
+                    `lastSeen`,
+                    `latitude`,
+                    `longitude`,
+                    `altitude`
+                ) VALUES (
+                    %(authorization)s,
+                    %(devEUI)s,
+                    %(devID)s,
+                    %(appID)s,
+                    UTC_TIMESTAMP(),
+                    UTC_TIMESTAMP(),
+                    %(latitude)s,
+                    %(longitude)s,
+                    %(altitude)s
+                )"""
+
+        values = {
+            "authorization": auth_token,
+            "devEUI": device.devEUI,
+            "devID": device.devID,
+            "appID": device.appID,
+            "latitude": device.location.latitude,
+            "longitude": device.location.longitude,
+            "altitude": device.location.altitude
+        }
+        try:
+            cur.execute(stmt, values)
+        except mysql.connector.errors.IntegrityError: #Combination of authorization/devEUI does already exist
+            pseudonym = None
+        else:
+            pseudonym = cur.lastrowid
+            device.pseudonym = pseudonym
+
+        cnx.commit()
+        cnx.close()
+        return pseudonym
+
+    def removeDevice(self, auth_token, device):
+        pass
+
+
+    def deviceSeen(self, device):
+        pass
