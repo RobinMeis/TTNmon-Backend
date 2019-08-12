@@ -7,7 +7,6 @@ from . import location
 
 class gateway:
     def __init__(self, metadata):
-        print(metadata)
         self.gtw_id = None
         self.__time = None
         self.__channel = None
@@ -34,7 +33,10 @@ class gateway:
     @timestamp.setter
     def timestamp(self, timestamp):
         if (isinstance(timestamp, str)): #Convert string to timestamp
-            self.__timestamp = dateutil.parser.parse(timestamp)
+            try:
+                self.__timestamp = dateutil.parser.parse(timestamp)
+            except ValueError: #No timestamp provided
+                self.__timestamp = None
         elif (isinstance(timestamp, datetime)): #Copy datetime
             self.__timestamp = timestamp
         else:
