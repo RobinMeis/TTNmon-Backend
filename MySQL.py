@@ -2,6 +2,7 @@ import mysql.connector
 from mysql.connector import pooling, ClientFlag
 import string
 import random
+import device
 
 class MySQL:
     def __init__(self, host, username, password, database, pool_reset_session, ssl_verify_cert, ssl_verify_identity, ssl_disabled, ca_cert, pool_name, pool_size):
@@ -171,3 +172,32 @@ class MySQL:
             return False
         else:
             return True
+
+    def checkToken(self, auth_token):
+        pass
+
+    def getDevices(self, auth_token):
+        devices = []
+        cnx = self.cnxpool.get_connection()
+        cnx.commit()
+        cur = cnx.cursor(dictionary=True)
+        stmt = """SELECT
+                    `pseudonym`,
+                    `devEUI`,
+                    `appID`,
+                    `devID`,
+                    `created`,
+                    `lastSeen`,
+                    `latitude`,
+                    `longitude`,
+                    `altitude`
+                FROM `devices` WHERE
+                    `authorization` = %s"""
+
+        cur.execute(stmt, (auth_token,))
+        for row in cur:
+            dev = device.device()
+            dev.fromDB(row)
+            devices.append(dev)
+        cnx.close()
+        return devices
