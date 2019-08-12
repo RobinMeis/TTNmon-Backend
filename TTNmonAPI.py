@@ -53,9 +53,8 @@ def webhook():
     try:
         packet = metadata.packet.packet(request.json)
     except Exception as e:
-        print(str(e))
         response = jsonify(error=1, msg_en="Invalid data!")
-        log.invalid_packets.logWrite(json.dumps(request.json))
+        log.invalid_packets.logWrite("%s\n\n%s" % (e, json.dumps(request.json)))
         return response
     else:
         response = jsonify(error=0, msg_en="Strange, you should never ever see this page. Did you try to send fake data? Well, it's your device!")
