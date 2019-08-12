@@ -50,8 +50,9 @@ def hello():
 
 @TTNmonAPI.route("/webhook", methods=['POST'])
 def webhook():
+    packet = metadata.packet.packet()
     try:
-        packet = metadata.packet.packet(request.json)
+        packet.fromTTN(request.json)
     except Exception as e:
         response = jsonify(error=1, msg_en="Invalid data!")
         log.invalid_packets.logWrite("%s\n\n%s" % (e, json.dumps(request.json)))

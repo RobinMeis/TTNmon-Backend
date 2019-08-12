@@ -7,4 +7,6 @@ class gateways:
         self.gateways = []
 
     def addGateway(self, metadata):
-        self.gateways.append(gateway.gateway(metadata))
+        gtw = gateway.gateway()
+        gtw.fromTTN(metadata)
+        self.gateways.append(gtw)

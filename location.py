@@ -1,9 +1,10 @@
 class location:
-    def __init__(self, metadata):
+    def __init__(self):
         self.__latitude = None
         self.__longitude = None
         self.__altitude = None
 
+    def fromTTN(self, metadata):
         try:
             self.latitude = metadata["metadata"]["latitude"]
             self.longitude = metadata["metadata"]["longitude"]

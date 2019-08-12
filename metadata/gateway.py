@@ -3,27 +3,26 @@
 import datetime
 import dateutil.parser
 
-from . import location
+import location
 
 class gateway:
-    def __init__(self, metadata):
+    def __init__(self):
         self.gtw_id = None
         self.__time = None
         self.__channel = None
         self.__RSSI = None
         self.__SNR  = None
         self.__rf_chain = None
-        self.__latitude = None
-        self.__longitude = None
-        self.__altitude = None
+        self.location = location.location()
 
+    def fromTTN(self, metadata):
         self.gtw_id = metadata["gtw_id"]
         self.timestamp = metadata["time"]
         self.channel = metadata["channel"]
         self.RSSI = metadata["rssi"]
         self.SNR = metadata["snr"]
         self.rf_chain = metadata["rf_chain"]
-        self.location = location.location(metadata)
+        self.location.fromTTN(metadata)
 
     #time getter/setter
     @property

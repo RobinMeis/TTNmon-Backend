@@ -4,14 +4,12 @@ import datetime
 import dateutil.parser
 import re
 
+import device
 from . import gateways
-from . import location
 
 class packet:
-    def __init__(self, packet):
-        self.appId = None
-        self.devId = None
-        self.__hardwareSerial = None
+    def __init__(self):
+        self.device = device.device()
         self.__counter = None
         self.__timestamp = None
         self.__frequency = None
@@ -22,40 +20,20 @@ class packet:
         self.__CR = None
         self.__CR_k = None
         self.__CR_n = None
-        self.__latitude = None
-        self.__longitude = None
-        self.__altitude = None
         self.__gateways = None
 
-        self.appId = packet["app_id"]
-        self.devId = packet["dev_id"]
-        self.hardwareSerial = packet["hardware_serial"]
+    def fromTTN(self, packet):
+        self.device.fromTTN(packet)
         self.counter = packet["counter"]
         self.timestamp = packet["metadata"]["time"]
         self.frequency = packet["metadata"]["frequency"]
         self.modulation = packet["metadata"]["modulation"]
         self.dataRate = packet["metadata"]["data_rate"]
         self.CR = packet["metadata"]["coding_rate"]
-        self.location = location.location(packet)
 
         self.__gateways = gateways.gateways()
         for gateway in packet["metadata"]["gateways"]:
             self.__gateways.addGateway(gateway)
-
-    #hardwareSerial getter/setter
-    @property
-    def hardwareSerial(self):
-        return self.__hardwareSerial
-
-    @hardwareSerial.setter
-    def hardwareSerial(self, hardwareSerial):
-        if (isinstance(hardwareSerial, str)): #Store devEUI as string
-            if (len(hardwareSerial) == 16): #devEUI is 8 Bytes long
-                self.__hardwareSerial = hardwareSerial
-            else:
-                raise ValueError("Invalid length of hardwareSerial")
-        else:
-            raise ValueError("Invalid type of hardwareSerial")
 
     #counter getter/setter
     @property
@@ -200,3 +178,8 @@ class packet:
     @property
     def gateways(self):
         return self.__gateways.gateways
+
+    #location getter
+    @property
+    def location(self):
+        return self.device.location
