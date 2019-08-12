@@ -45,7 +45,7 @@ def hello():
 def webhook():
     try:
         packet = metadata.packet.packet(request.json)
-    except Exception, e:
+    except Exception as e:
         print(str(e))
         response = jsonify(error=1, msg_en="Invalid data!")
         return response
