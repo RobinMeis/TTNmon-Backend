@@ -138,10 +138,7 @@ class MySQL:
         cnx.commit()
         cnx.close()
 
-        if cur.rowcount == 0:
-            return False
-        else:
-            return True
+        return cur.rowcount > 0
 
     def updateDevice(self, auth_token, device):
         cnx = self.cnxpool.get_connection()

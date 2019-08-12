@@ -8,6 +8,7 @@ from Influx import Influx
 
 import metadata.packet
 import log
+import device
 
 config = configparser.ConfigParser() #Load config
 config.read('TTNmon.conf')
@@ -123,3 +124,23 @@ def getDevices():
             response["devices"].append(dev)
         response = jsonify(response)
         return response
+
+@TTNmonAPI.route("/api/device/<devEUI>", methods=['DELETE'])
+def deleteDevice(devEUI):
+    authorization = request.headers.get('Authorization')
+    dev = device.device()
+    try:
+        dev.devEUI = devEUI
+    except ValueError:
+        response = jsonify(error=1,
+                        msg_en="Invalid devEUI provided")
+        return response,400
+    else:
+        result = mySQL.removeDevice(authorization, dev)
+        if result:
+            response = jsonify(error=0,
+                    msg_en="Device has been successfully removed")
+        else:
+            response = jsonify(error=2,
+                    msg_en="Device not found"),404
+    return response
