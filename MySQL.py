@@ -174,7 +174,19 @@ class MySQL:
             return True
 
     def checkToken(self, auth_token):
-        pass
+        cnx = self.cnxpool.get_connection()
+        cnx.commit()
+        cur = cnx.cursor()
+        stmt = """SELECT
+                    `created`
+                FROM `authorizations` WHERE
+                    `token` = %s"""
+
+        cur.execute(stmt, (auth_token,))
+        result = cur.fetchone()
+        cnx.close()
+
+        return result is not None
 
     def getDevices(self, auth_token):
         devices = []
