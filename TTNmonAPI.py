@@ -116,8 +116,8 @@ def getDevices():
             dev["devEUI"] = device.devEUI
             dev["appID"] = device.appID
             dev["devID"] = device.devID
-            dev["created"] = device.created.strftime("%Y-%m%d %H:%M:%S")
-            dev["lastSeen"] = device.lastSeen.strftime("%Y-%m%d %H:%M:%S")
+            dev["created"] = device.created.strftime("%Y-%m-%d %H:%M:%S")
+            dev["lastSeen"] = device.lastSeen.strftime("%Y-%m-%d %H:%M:%S")
             dev["latitude"] = device.location.latitude
             dev["longitude"] = device.location.longitude
             dev["altitude"] = device.location.altitude
