@@ -7,7 +7,7 @@ import location
 
 class gateway:
     def __init__(self):
-        self.gtw_id = None
+        self.gtwID = None
         self.__time = None
         self.__channel = None
         self.__RSSI = None
@@ -16,7 +16,7 @@ class gateway:
         self.location = location.location()
 
     def fromTTN(self, metadata):
-        self.gtw_id = metadata["gtw_id"]
+        self.gtwID = metadata["gtw_id"]
         self.timestamp = metadata["time"]
         self.channel = metadata["channel"]
         self.RSSI = metadata["rssi"]
@@ -79,11 +79,11 @@ class gateway:
 
     #rf_chain getter/setter
     @property
-    def rf_chain(self):
+    def rfChain(self):
         return self.__rf_chain
 
-    @rf_chain.setter
-    def rf_chain(self, rf_chain):
+    @rfChain.setter
+    def rfChain(self, rf_chain):
         if (isinstance(rf_chain, int)): #rf_chain must be of type int...
             self.__rf_chain = rf_chain
         else:
