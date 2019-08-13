@@ -73,7 +73,7 @@ class gateway:
     @SNR.setter
     def SNR(self, SNR):
         if (isinstance(SNR, (float, int))): #SNR must be of type int...
-            self.__SNR = SNR
+            self.__SNR = float(SNR)
         else:
             raise ValueError("Invalid type of SNR")
 
