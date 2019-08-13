@@ -8,16 +8,23 @@ class location:
 
     def fromTTN(self, metadata):
         try:
-            self.latitude = metadata["metadata"]["latitude"]
-            self.longitude = metadata["metadata"]["longitude"]
+            self.latitude = metadata["latitude"]
+            self.longitude = metadata["longitude"]
         except (KeyError, ValueError):
-            self.__latitude = None
-            self.__longitude = None
+            try:
+                self.latitude = metadata["metadata"]["latitude"]
+                self.longitude = metadata["metadata"]["longitude"]
+            except (KeyError, ValueError):
+                self.__latitude = None
+                self.__longitude = None
 
         try:
-            self.altitude = metadata["metadata"]["altitude"]
+            self.altitude = metadata["altitude"]
         except (KeyError, ValueError):
-            self.__altitude = None
+            try:
+                self.altitude = metadata["metadata"]["altitude"]
+            except (KeyError, ValueError):
+                self.__altitude = None
 
     def fromDB(self, row):
         try:
