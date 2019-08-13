@@ -10,3 +10,8 @@ class gateways:
         gtw = gateway.gateway()
         gtw.fromTTN(metadata)
         self.gateways.append(gtw)
+
+    #Count gateways
+    @property
+    def count(self):
+        return len(self.gateways)
