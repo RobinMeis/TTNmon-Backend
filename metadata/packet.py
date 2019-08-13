@@ -31,7 +31,6 @@ class packet:
         self.dataRate = packet["metadata"]["data_rate"]
         self.CR = packet["metadata"]["coding_rate"]
 
-        self.__gateways = gateways.gateways()
         for gateway in packet["metadata"]["gateways"]:
             self.__gateways.addGateway(gateway)
 

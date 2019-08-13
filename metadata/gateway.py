@@ -99,6 +99,6 @@ class gateway:
     @property
     def distance(self):
         gateway = (self.location.latitude, self.location.longitude)
-        node = (self.packet.location.latitude, self.packet.location.longitude)
+        node = (self.__packet.location.latitude, self.__packet.location.longitude)
 
         return geopy.distance.distance(gateway, node).m

@@ -5,7 +5,7 @@ from . import gateway
 class gateways:
     def __init__(self, packet=None):
         self.gateways = []
-        self.__packet = None
+        self.__packet = packet
 
     def addGateway(self, metadata):
         gtw = gateway.gateway(self.__packet)
