@@ -47,7 +47,7 @@ class Influx:
                 },
                 "time": packet.timestamp,
                 "fields": {
-                    "gtwTime": gateway.unixTimestamp,
+                    "gtwTime": gateway.unixTimestamp * 1e9,
                     "RSSI": gateway.RSSI,
                     "SNR": gateway.SNR,
                     "rfChain": gateway.rf_chain,
