@@ -41,6 +41,10 @@ class gateway:
         else:
             raise ValueError("Invalid type of timestamp. Must be str or datetime")
 
+    @property
+    def unixTimestamp(self):
+        return datetime.datetime.timestamp(self.__timestamp)
+
     #channel getter/setter
     @property
     def channel(self):
