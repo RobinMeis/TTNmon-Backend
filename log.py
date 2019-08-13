@@ -25,9 +25,11 @@ class log:
 
     def logAppend(self, message): #Appends to an existing logfile
         if self.__enabled:
+            timestamp = datetime.datetime.now()
+
             try:
                 with open("%s/%s.log" % (self.__logdir, self.__logname), 'a+') as log:
-                    log.write("%s\n" % (message,))
+                    log.write("[%s] %s\n" % (timestamp.strftime("%Y-%d-%m %H:%M:%S"), message,))
             except Exception as e:
                 print("[WARNING] Logging to %s/%s.log failed: %s" % (self.__logdir,self.__logname, e))
 
