@@ -3,11 +3,12 @@
 from . import gateway
 
 class gateways:
-    def __init__(self):
+    def __init__(self, packet=None):
         self.gateways = []
+        self.__packet = None
 
     def addGateway(self, metadata):
-        gtw = gateway.gateway()
+        gtw = gateway.gateway(self.__packet)
         gtw.fromTTN(metadata)
         self.gateways.append(gtw)
 

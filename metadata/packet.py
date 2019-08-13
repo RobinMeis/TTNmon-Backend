@@ -20,7 +20,7 @@ class packet:
         self.__CR = None
         self.__CR_k = None
         self.__CR_n = None
-        self.__gateways = gateways.gateways()
+        self.__gateways = gateways.gateways(self)
 
     def fromTTN(self, packet):
         self.device.fromTTN(packet)

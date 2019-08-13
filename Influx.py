@@ -54,7 +54,7 @@ class Influx:
                     "latitude": gateway.location.latitude,
                     "longitude": gateway.location.longitude,
                     "altitude": gateway.location.altitude,
-                    "distance": None
+                    "distance": gateway.distance
                 }
               }
             )

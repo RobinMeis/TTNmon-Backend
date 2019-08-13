@@ -2,11 +2,13 @@
 
 import datetime
 import dateutil.parser
+import geopy.distance
 
 import location
 
 class gateway:
-    def __init__(self):
+    def __init__(self, packet=None):
+        self.__packet = packet
         self.gtwID = None
         self.__time = None
         self.__channel = None
@@ -92,3 +94,11 @@ class gateway:
             self.__rf_chain = rf_chain
         else:
             raise ValueError("Invalid type of rf_chain")
+
+    #Returns the distance between node and gateway in m
+    @property
+    def distance(self):
+        gateway = (self.location.latitude, self.location.longitude)
+        node = (self.packet.location.latitude, self.packet.location.longitude)
+
+        return geopy.distance.distance(gateway, node).m
