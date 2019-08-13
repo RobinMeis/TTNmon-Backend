@@ -33,7 +33,7 @@ class Influx:
                     "latitude": packet.location.latitude,
                     "longitude": packet.location.longitude,
                     "altitude": packet.location.altitude,
-                    "gatewayCount": packet.gateways.gatewayCount
+                    "gatewayCount": len(packet.gateways)
                 }
             }
         )
