@@ -13,13 +13,6 @@ import device
 config = configparser.ConfigParser() #Load config
 config.read('TTNmon.conf')
 
-influx = Influx(
-  config["Influx"]["host"],
-  config["Influx"]["username"],
-  config["Influx"]["password"],
-  config["Influx"]["ca_cert"]
-)
-
 TTNmonAPI = Flask(__name__) #Initialize App
 CORS(TTNmonAPI)
 with TTNmonAPI.app_context(): #Setup App
@@ -42,6 +35,16 @@ with TTNmonAPI.app_context(): #Setup App
       config["MySQL"]["ca_cert"],
       config["MySQL"]["pool_name"],
       config["MySQL"].getint("pool_size")
+    )
+
+    influx = Influx(
+      config["Influx"]["host"],
+      config["Influx"]["port"],
+      config["Influx"]["username"],
+      config["Influx"]["password"],
+      config["Influx"]["database"],
+      config["Influx"].getboolean("ssl_disabled"),
+      config["Influx"].getboolean("verify_ssl")
     )
 
 @TTNmonAPI.route("/")
