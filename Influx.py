@@ -19,7 +19,7 @@ class Influx:
             {
                 "measurement": "packets_metadata",
                 "tags": {
-                    "devPseudonym": packet.pseudonym,
+                    "devPseudonym": packet.device.pseudonym,
                 },
                 "time": packet.timestamp,
                 "fields": {
