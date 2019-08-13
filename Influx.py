@@ -33,3 +33,5 @@ class Influx:
                 }
             }
         )
+
+        self.cnx.write_points(cache)
