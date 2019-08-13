@@ -20,6 +20,7 @@ class Influx:
                 "measurement": "packets_metadata",
                 "tags": {
                     "devPseudonym": packet.device.pseudonym,
+                    "modulation": packet.modulation,
                 },
                 "time": packet.timestamp,
                 "fields": {
@@ -29,7 +30,10 @@ class Influx:
                     "CR_k": packet.CR_k,
                     "SF": packet.SF,
                     "BW": packet.BW,
-                    #"gatewayCount": row["gateway_count"]
+                    "latitude": packet.location.latitude,
+                    "longitude": packet.location.longitude,
+                    "altitude": packet.location.altitude,
+                    "gatewayCount": packet.gateways.count
                 }
             }
         )
