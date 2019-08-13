@@ -100,7 +100,7 @@ class gateway:
     def distance(self):
         if (self.location.latitude is None or self.location.longitude is None or self.__packet.location.latitude is None or self.__packet.location.longitude is None):
             return None
-            
+
         gateway = (self.location.latitude, self.location.longitude)
         node = (self.__packet.location.latitude, self.__packet.location.longitude)
 
