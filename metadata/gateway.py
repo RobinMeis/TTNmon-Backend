@@ -45,7 +45,10 @@ class gateway:
 
     @property
     def unixTimestamp(self):
-        return datetime.datetime.timestamp(self.__timestamp)
+        if (self.__timestamp is None):
+            return None
+        else:
+            return datetime.datetime.timestamp(self.__timestamp)
 
     #channel getter/setter
     @property
