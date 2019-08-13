@@ -48,7 +48,7 @@ class gateway:
         if (self.__timestamp is None):
             return None
         else:
-            return datetime.datetime.timestamp(self.__timestamp)
+            return datetime.datetime.timestamp(self.__timestamp)*1e9
 
     #channel getter/setter
     @property
