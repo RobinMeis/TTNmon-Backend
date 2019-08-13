@@ -82,7 +82,6 @@ def webhook():
         else:
             mySQL.updateDevice(authorization, packet.device)
 
-        print("ToDo: Do something with influx, this is pseudonym" + str(pseudonym))
         influx.addPacket(packet)
         response = jsonify(error=0, msg_en="Success!")
         return response
