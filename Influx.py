@@ -38,4 +38,27 @@ class Influx:
             }
         )
 
+        for gateway in packet.gateways:
+            cache.append(
+              {
+                "measurement": "packets_gateways_metadata",
+                "tags": {
+                    "devPseudonym": packet.device.pseudonym,
+                    "gtwID": gateway.gtwID,
+                    "channel": gateway.channel
+                },
+                "time": packet.timestamp,
+                "fields": {
+                    "gtwTime": gateway.timestamp,
+                    "RSSI": gateway.RSSI,
+                    "SNR": gateway.SNR,
+                    "rfChain": gateway.rf_chain,
+                    "latitude": gateway.location.latitude,
+                    "longitude": gateway.location.longitude,
+                    "altitude": gateway.location.altitude,
+                    "distance": None
+                }
+            }
+
+
         self.cnx.write_points(cache)
