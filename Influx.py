@@ -9,8 +9,6 @@ class Influx:
                                     database=database,
                                     ssl=(not ssl_disabled),
                                     verify_ssl=verify_ssl)
-        result = self.cnx.query("show databases;")
-        print(result)
 
     def addPacket(self, packet):
         cache = []
@@ -58,7 +56,8 @@ class Influx:
                     "altitude": gateway.location.altitude,
                     "distance": None
                 }
-            }
+              }
+            )
 
 
         self.cnx.write_points(cache)
