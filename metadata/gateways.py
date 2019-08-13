@@ -13,5 +13,5 @@ class gateways:
 
     #Count gateways
     @property
-    def count(self):
+    def gatewayCount(self):
         return len(self.gateways)
