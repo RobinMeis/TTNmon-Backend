@@ -10,6 +10,7 @@ class Influx:
                                     ssl=(not ssl_disabled),
                                     verify_ssl=verify_ssl)
 
+    #Adds a packet to the DB
     def addPacket(self, packet):
         cache = []
 

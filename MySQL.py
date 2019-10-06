@@ -20,6 +20,7 @@ class MySQL:
                                                                     database = database,
                                                                   )
 
+    # Creates a new authorization tokens
     def createToken(self):
         letters = string.ascii_letters + string.digits
         token = ''.join(random.choice(letters) for i in range(20))
@@ -41,6 +42,7 @@ class MySQL:
         cnx.close()
         return token
 
+    # Checks if a supplied authentication token is valid
     def checkToken(self, auth_token):
         cnx = self.cnxpool.get_connection()
         cur = cnx.cursor(dictionary=True)
@@ -57,6 +59,7 @@ class MySQL:
         else:
             return result
 
+    # returns the device pseudonym for a supplied auth token
     def getPseudonym(self, auth_token, device):
         cnx = self.cnxpool.get_connection()
         cnx.commit()
@@ -81,6 +84,7 @@ class MySQL:
             device.lastSeen = result["lastSeen"]
             return result["pseudonym"]
 
+    # creates a new device
     def createDevice(self, auth_token, device):
         cnx = self.cnxpool.get_connection()
         cur = cnx.cursor()
@@ -127,6 +131,7 @@ class MySQL:
         cnx.close()
         return pseudonym
 
+    # removes a device
     def removeDevice(self, auth_token, device):
         cnx = self.cnxpool.get_connection()
         cnx.commit()
@@ -140,6 +145,7 @@ class MySQL:
 
         return cur.rowcount > 0
 
+    # updates a device
     def updateDevice(self, auth_token, device):
         cnx = self.cnxpool.get_connection()
         cnx.commit()
@@ -170,6 +176,7 @@ class MySQL:
         else:
             return True
 
+    # checks an authorization token
     def checkToken(self, auth_token):
         cnx = self.cnxpool.get_connection()
         cnx.commit()
@@ -185,6 +192,7 @@ class MySQL:
 
         return result is not None
 
+    # returns a list of devices for the supplied auth token
     def getDevices(self, auth_token):
         devices = []
         cnx = self.cnxpool.get_connection()
