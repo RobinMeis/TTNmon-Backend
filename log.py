@@ -29,7 +29,7 @@ class log:
 
             try:
                 with open("%s/%s.log" % (self.__logdir, self.__logname), 'a+') as log:
-                    log.write("[%s] %s\n" % (timestamp.strftime("%Y-%d-%m %H:%M:%S"), message,))
+                    log.write("[%s] %s\n" % (timestamp.strftime("%Y-%m-%d %H:%M:%S"), message,))
             except Exception as e:
                 print("[WARNING] Logging to %s/%s.log failed: %s" % (self.__logdir,self.__logname, e))
 
@@ -43,7 +43,7 @@ class log:
             else:
                 n = 0
                 while True: #Do not overwrite existing logfiles with same timestamp
-                    filename = "%s/%s-%s-%d.log" % (self.__logdir, self.__logname, timestamp.strftime("%Y-%d-%m_%H-%M-%S"), n)
+                    filename = "%s/%s-%s-%d.log" % (self.__logdir, self.__logname, timestamp.strftime("%Y-%m-%d_%H-%M-%S"), n)
                     if not os.path.isfile(filename):
                         break
                     n += 1
