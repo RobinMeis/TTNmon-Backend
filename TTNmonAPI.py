@@ -86,7 +86,7 @@ def webhook():
         response = jsonify(error=0, msg_en="Success!")
         return response
 
-@TTNmonAPI.route("/api/token", methods=['GET', 'POST'])
+@TTNmonAPI.route("/v2/token", methods=['GET', 'POST'])
 def createToken():
     token = mySQL.createToken()
     if token == None:
@@ -98,7 +98,14 @@ def createToken():
                         auth_token=token)
     return response
 
-@TTNmonAPI.route("/api/getDevices", methods=['GET'])
+@TTNmonAPI.route("/v2/device/<devPseudonym>", methods=['GET'])
+def getDevice():
+    authorization = request.headers.get('Authorization')
+    authorized = mySQL.checkToken(authorization)
+    response = jsonify(error=0,
+            msg_en="JustNothingYet")
+
+@TTNmonAPI.route("/v2/devices", methods=['GET'])
 def getDevices():
     authorization = request.headers.get('Authorization')
     authorized = mySQL.checkToken(authorization)
@@ -128,7 +135,7 @@ def getDevices():
         response = jsonify(response)
         return response
 
-@TTNmonAPI.route("/api/device/<devEUI>", methods=['DELETE'])
+@TTNmonAPI.route("/v2/device/<devEUI>", methods=['DELETE'])
 def deleteDevice(devEUI):
     authorization = request.headers.get('Authorization')
     dev = device.device()
@@ -136,8 +143,7 @@ def deleteDevice(devEUI):
         dev.devEUI = devEUI
     except ValueError:
         response = jsonify(error=1,
-                        msg_en="Invalid devEUI provided")
-        return response,400
+                        msg_en="Invalid devEUI provided"),400
     else:
         result = mySQL.removeDevice(authorization, dev)
         if result:
@@ -146,4 +152,18 @@ def deleteDevice(devEUI):
         else:
             response = jsonify(error=2,
                     msg_en="Device not found"),404
+    return response
+
+@TTNmonAPI.route("/v2/metadata/packets/<devEUI>", methods=['GET'])
+def getPacketsMetadata(devEUI):
+    print(devEUI)
+    response = jsonify(error=0,
+            msg_en="JustNothingYet")
+    return response
+
+@TTNmonAPI.route("/v2/metadata/gateways/<devEUI>", methods=['GET'])
+def getPacketsMetadata(devEUI):
+    print(devEUI)
+    response = jsonify(error=0,
+            msg_en="JustNothingYet")
     return response
