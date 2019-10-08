@@ -218,3 +218,26 @@ class MySQL:
             devices.append(dev)
         cnx.close()
         return devices
+
+    def getDevice(self, pseudonym, auth_token=None):
+        dev = device.device()
+        cnx = self.cnxpool.get_connection()
+        cnx.commit()
+        cur = cnx.cursor(dictionary=True)
+        stmt = """SELECT
+                    `devEUI`,
+                    `appID`,
+                    `devID`,
+                    `created`.
+                    `lastSeen`,
+                    `latitude`,
+                    `longitude`,
+                    `altitude`,
+                    `auth_token`
+                FROM `devices` WHERE
+                    `pseudonym` = %s"""
+
+        cur.execute(stmt, (pseudonym,))
+        result = cur.fetchone()
+        cnx.close()
+        print(result)
