@@ -111,7 +111,7 @@ def getDevice(devPseudonym):
     else:
         authorization = request.headers.get('Authorization')
         authorized = mySQL.checkToken(authorization)
-        mysql.getDevice(devPseudonym)
+        mySQL.getDevice(devPseudonym)
         response = jsonify(error=0,
             msg_en="JustNothingYet")
     return response
