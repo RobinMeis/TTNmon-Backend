@@ -248,6 +248,6 @@ class MySQL:
             dev.location.longitude = result["longitude"]
             dev.location.altitude = result["altitude"]
             dev.authorization = result["authorization"]
-            return dev
+            return True
         else:
             return False
