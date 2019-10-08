@@ -136,8 +136,7 @@ def getDevice(devPseudonym):
                 owner=owner)
         else:
             response = jsonify(error=1,
-                msg_en="Device not found",
-                device=data),404
+                msg_en="Device not found"),404
     return response
 
 @TTNmonAPI.route("/v2/devices", methods=['GET'])
