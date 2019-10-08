@@ -54,6 +54,7 @@ def hello():
 
 @TTNmonAPI.route("/webhook", methods=['POST'])
 def webhook():
+    print("Request")
     authorization = request.headers.get('Authorization')
     mySQL.getDevices(authorization)
     packet = metadata.packet.packet()
