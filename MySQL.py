@@ -242,6 +242,7 @@ class MySQL:
         if (result):
             dev.devEUI = result["devEUI"]
             dev.appID = result["appID"]
+            dev.devID = result["devID"]
             dev.created = result["created"]
             dev.lastSeen = result["lastSeen"]
             dev.location.latitude = result["latitude"]
