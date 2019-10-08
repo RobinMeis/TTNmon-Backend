@@ -104,10 +104,10 @@ def getDevice(devPseudonym):
     authorization = request.headers.get('Authorization')
     dev = device.device()
     try:
-        dev.pseudonym = devPseudonym
+        dev.pseudonym = int(devPseudonym)
     except ValueError:
         response = jsonify(error=1,
-                        msg_en="Device not found"),404
+                        msg_en="Invalid pseudonym provided"),404
     else:
         authorization = request.headers.get('Authorization')
         authorized = mySQL.checkToken(authorization)
