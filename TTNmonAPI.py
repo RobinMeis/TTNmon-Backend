@@ -123,7 +123,7 @@ def getDevice(devPseudonym):
               }
             }
 
-            if (authorized):
+            if (authorized and authorization == dev.authorization):
                 data["appID"] = dev.appID
                 data["devID"] = dev.devID
                 data["devEUI"] = dev.devEUI
