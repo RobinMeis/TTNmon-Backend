@@ -102,6 +102,7 @@ def createToken():
 @TTNmonAPI.route("/v2/device/<devPseudonym>", methods=['GET'])
 def getDevice(devPseudonym):
     authorization = request.headers.get('Authorization')
+    authorized = mySQL.checkToken(authorization)
     dev = device.device()
     try:
         dev.pseudonym = int(devPseudonym)
@@ -109,9 +110,12 @@ def getDevice(devPseudonym):
         response = jsonify(error=1,
                         msg_en="Invalid pseudonym provided"),404
     else:
-        authorization = request.headers.get('Authorization')
-        authorized = mySQL.checkToken(authorization)
-        mySQL.getDevice(devPseudonym)
+        data = {
+          "pseudonym": dev.pseudonym,
+          "created": dev.created,
+          "lastSeen": dev.lastSeen,
+        }
+        mySQL.getDevice(dev)
         response = jsonify(error=0,
             msg_en="JustNothingYet")
     return response
