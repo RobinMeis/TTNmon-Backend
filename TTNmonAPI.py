@@ -115,9 +115,15 @@ def getDevice(devPseudonym):
           "created": dev.created,
           "lastSeen": dev.lastSeen,
         }
-        mySQL.getDevice(dev)
-        response = jsonify(error=0,
-            msg_en="JustNothingYet")
+        result = mySQL.getDevice(dev)
+        if result:
+            response = jsonify(error=0,
+                msg_en="JustNothingYet",
+                device=data)
+        else:
+            response = jsonify(error=1,
+                msg_en="Device not found",
+                device=data),404
     return response
 
 @TTNmonAPI.route("/v2/devices", methods=['GET'])
