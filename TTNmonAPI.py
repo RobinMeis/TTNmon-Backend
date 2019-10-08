@@ -113,8 +113,8 @@ def getDevice(devPseudonym):
         result = mySQL.getDevice(dev)
         data = {
           "pseudonym": dev.pseudonym,
-          "created": dev.created,
-          "lastSeen": dev.lastSeen,
+          "created": dev.created.strftime("%Y-%m-%d %H:%M:%S"),
+          "lastSeen": dev.lastSeen.strftime("%Y-%m-%d %H:%M:%S"),
           "location": {
             "latitude": dev.location.latitude,
             "longitude": dev.location.longitude,
