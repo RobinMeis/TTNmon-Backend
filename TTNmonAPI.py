@@ -52,7 +52,7 @@ def hello():
     response = "This is the TTNmon API. The frontend is located <a href=\"%s\">here</a>" % (frontend_url,)
     return make_response(response, 200)
 
-@TTNmonAPI.route("/webhook", methods=['POST'])
+@TTNmonAPI.route("/webhook/", methods=['POST'])
 def webhook():
     print("Request")
     authorization = request.headers.get('Authorization')
