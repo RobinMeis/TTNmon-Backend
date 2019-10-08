@@ -99,9 +99,10 @@ def createToken():
     return response
 
 @TTNmonAPI.route("/v2/device/<devPseudonym>", methods=['GET'])
-def getDevice():
+def getDevice(devPseudonym):
     authorization = request.headers.get('Authorization')
     authorized = mySQL.checkToken(authorization)
+    mysql.getDevice(devPseudonym)
     response = jsonify(error=0,
             msg_en="JustNothingYet")
 
@@ -162,7 +163,7 @@ def getPacketsMetadata(devEUI):
     return response
 
 @TTNmonAPI.route("/v2/metadata/gateways/<devEUI>", methods=['GET'])
-def getPacketsMetadata(devEUI):
+def getGatewaysMetadata(devEUI):
     print(devEUI)
     response = jsonify(error=0,
             msg_en="JustNothingYet")
