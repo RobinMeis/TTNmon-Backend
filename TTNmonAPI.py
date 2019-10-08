@@ -110,6 +110,7 @@ def getDevice(devPseudonym):
         response = jsonify(error=1,
                         msg_en="Invalid pseudonym provided"),404
     else:
+        result = mySQL.getDevice(dev)
         data = {
           "pseudonym": dev.pseudonym,
           "created": dev.created,
@@ -120,7 +121,7 @@ def getDevice(devPseudonym):
             "altitude": dev.location.altitude
           }
         }
-        result = mySQL.getDevice(dev)
+
         if result:
             response = jsonify(error=0,
                 msg_en="JustNothingYet",
