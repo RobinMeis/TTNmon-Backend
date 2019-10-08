@@ -111,21 +111,27 @@ def getDevice(devPseudonym):
                         msg_en="Invalid pseudonym provided"),404
     else:
         result = mySQL.getDevice(dev)
-        data = {
-          "pseudonym": dev.pseudonym,
-          "created": dev.created.strftime("%Y-%m-%d %H:%M:%S"),
-          "lastSeen": dev.lastSeen.strftime("%Y-%m-%d %H:%M:%S"),
-          "location": {
-            "latitude": dev.location.latitude,
-            "longitude": dev.location.longitude,
-            "altitude": dev.location.altitude
-          }
-        }
-
         if result:
+            data = {
+              "pseudonym": dev.pseudonym,
+              "created": dev.created.strftime("%Y-%m-%d %H:%M:%S"),
+              "lastSeen": dev.lastSeen.strftime("%Y-%m-%d %H:%M:%S"),
+              "location": {
+                "latitude": dev.location.latitude,
+                "longitude": dev.location.longitude,
+                "altitude": dev.location.altitude
+              }
+            }
+
+            if (authorized):
+                data["appID"] = dev.appID
+                data["devID"] = dev.devID
+                data["devEUI"] = dev.devEUI
+
             response = jsonify(error=0,
-                msg_en="JustNothingYet",
-                device=data)
+                msg_en="The device has been queried according to the supplied privileges",
+                device=data,
+                authorized=authorized)
         else:
             response = jsonify(error=1,
                 msg_en="Device not found",
