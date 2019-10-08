@@ -101,10 +101,19 @@ def createToken():
 @TTNmonAPI.route("/v2/device/<devPseudonym>", methods=['GET'])
 def getDevice(devPseudonym):
     authorization = request.headers.get('Authorization')
-    authorized = mySQL.checkToken(authorization)
-    mysql.getDevice(devPseudonym)
-    response = jsonify(error=0,
+    dev = device.device()
+    try:
+        dev.pseudonym = devPseudonym
+    except ValueError:
+        response = jsonify(error=1,
+                        msg_en="Device not found"),404
+    else:
+        authorization = request.headers.get('Authorization')
+        authorized = mySQL.checkToken(authorization)
+        mysql.getDevice(devPseudonym)
+        response = jsonify(error=0,
             msg_en="JustNothingYet")
+    return response
 
 @TTNmonAPI.route("/v2/devices", methods=['GET'])
 def getDevices():
