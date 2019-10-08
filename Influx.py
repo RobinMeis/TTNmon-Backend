@@ -62,3 +62,19 @@ class Influx:
 
 
         self.cnx.write_points(cache)
+
+    # Fetches a series of received packets for a device within the specified timerange. Device can be either the devPseudonym or a device Object
+    def getPacketsMetadata(self, device, start, end):
+        query = "SELECT * FROM packets_metadata WHERE devPseudonym=$devPseudonym and time>=$start and time<=$end"
+        params = {
+          "device": device,
+          "start": start,
+          "end": end
+        }
+
+        result = client.query(query, bind_params=params)
+        print(result)
+
+    # Feteches the gateway metadata for a device within a specified timerange
+    def getGatewaysMetadata(self, device, start, end):
+        pass
