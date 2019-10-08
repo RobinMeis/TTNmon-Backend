@@ -233,7 +233,7 @@ class MySQL:
                     `latitude`,
                     `longitude`,
                     `altitude`,
-                    `auth_token`
+                    `authorization`
                 FROM `devices` WHERE
                     `pseudonym` = %s"""
 
