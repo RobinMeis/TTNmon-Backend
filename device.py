@@ -27,6 +27,10 @@ class device:
         self.devEUI = row["devEUI"]
         self.created = row["created"]
         self.lastSeen = row["lastSeen"]
+        try:
+            self.authorization = row["authorization"]
+        except KeyError:
+            pass
 
     #pseudonym getter/setter
     @property

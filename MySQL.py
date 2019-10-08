@@ -224,6 +224,7 @@ class MySQL:
         cnx.commit()
         cur = cnx.cursor(dictionary=True)
         stmt = """SELECT
+                    `pseudonym`,
                     `devEUI`,
                     `appID`,
                     `devID`,
@@ -240,15 +241,17 @@ class MySQL:
         result = cur.fetchone()
         cnx.close()
         if (result):
-            dev.devEUI = result["devEUI"]
-            dev.appID = result["appID"]
-            dev.devID = result["devID"]
-            dev.created = result["created"]
-            dev.lastSeen = result["lastSeen"]
-            dev.location.latitude = result["latitude"]
-            dev.location.longitude = result["longitude"]
-            dev.location.altitude = result["altitude"]
-            dev.authorization = result["authorization"]
+            dev.fromDB(result)
+            #dev.pseudonym = result["pseudonym"]
+            #dev.devEUI = result["devEUI"]
+            #dev.appID = result["appID"]
+            #dev.devID = result["devID"]
+            #dev.created = result["created"]
+            #dev.lastSeen = result["lastSeen"]
+            #dev.location.latitude = result["latitude"]
+            #dev.location.longitude = result["longitude"]
+            #dev.location.altitude = result["altitude"]
+            #dev.authorization = result["authorization"]
             return True
         else:
             return False
