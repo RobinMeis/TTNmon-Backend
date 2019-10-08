@@ -11,6 +11,7 @@ class device:
         self.__lastSeen = None
         self.location = location.location()
         self.comment = None
+        self.authorization = None
 
     def fromTTN(self, packet):
         self.location.fromTTN(packet)
