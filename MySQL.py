@@ -228,7 +228,7 @@ class MySQL:
                     `devEUI`,
                     `appID`,
                     `devID`,
-                    `created`.
+                    `created`,
                     `lastSeen`,
                     `latitude`,
                     `longitude`,
