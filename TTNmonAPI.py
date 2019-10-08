@@ -123,7 +123,8 @@ def getDevice(devPseudonym):
               }
             }
 
-            if (authorized and authorization == dev.authorization):
+            owner = authorization == dev.authorization
+            if (authorized and owner):
                 data["appID"] = dev.appID
                 data["devID"] = dev.devID
                 data["devEUI"] = dev.devEUI
@@ -131,7 +132,8 @@ def getDevice(devPseudonym):
             response = jsonify(error=0,
                 msg_en="The device has been queried according to the supplied privileges",
                 device=data,
-                authorized=authorized)
+                authorized=authorized,
+                owner=owner)
         else:
             response = jsonify(error=1,
                 msg_en="Device not found",
