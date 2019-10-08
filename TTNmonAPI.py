@@ -114,6 +114,11 @@ def getDevice(devPseudonym):
           "pseudonym": dev.pseudonym,
           "created": dev.created,
           "lastSeen": dev.lastSeen,
+          "location": {
+            "latitude": dev.location.latitude,
+            "longitude": dev.location.longitude,
+            "altitude": dev.location.altitude
+          }
         }
         result = mySQL.getDevice(dev)
         if result:
