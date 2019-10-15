@@ -67,13 +67,13 @@ class Influx:
     def getPacketsMetadata(self, device, start, end):
         query = "SELECT * FROM packets_metadata WHERE devPseudonym=$devPseudonym and time>=$start and time<=$end"
         params = {
-          "device": device,
+          "devPseudonym": 1,
           "start": start,
           "end": end
         }
 
         result = client.query(query, bind_params=params)
-        print(result)
+        print (result)
 
     # Feteches the gateway metadata for a device within a specified timerange
     def getGatewaysMetadata(self, device, start, end):
