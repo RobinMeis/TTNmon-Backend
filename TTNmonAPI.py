@@ -109,7 +109,7 @@ def getDevice(devPseudonym):
         dev.pseudonym = int(devPseudonym)
     except ValueError:
         response = jsonify(error=1,
-                        msg_en="Invalid pseudonym provided"),404
+                        msg_en="Invalid pseudonym provided"),400
     else:
         result = mySQL.getDevice(dev)
         if result:
@@ -215,7 +215,7 @@ def getGatewayList(devPseudonym, dateFrom, dateTo):
                 msg_en="Invalid devPseudonym. Please supply an int"),400
         return response
 
-    mySQL.getDevice(devPseudonym)
+    mySQL.getDevice(dev)
 
     response = jsonify(error=0,
             msg_en="JustNothingYet")
