@@ -2,6 +2,7 @@ from flask import Flask, g, make_response, jsonify, request
 from flask_cors import CORS
 import configparser
 import json
+import dateutil
 
 from MySQL import MySQL
 from Influx import Influx
@@ -191,6 +192,15 @@ def deleteDevice(devEUI):
 @TTNmonAPI.route("/v2/metadata/device/<devEUI>/stats", methods=['GET'])
 def getMetadataStats(devEUI):
     print(devEUI)
+    response = jsonify(error=0,
+            msg_en="JustNothingYet")
+    return response
+
+@TTNmonAPI.route("/v2/metadata/device/<devEUI>/gateways/<dateFrom>/<dateTo>", methods=['GET'])
+def getMetadataStats(devEUI, dateFrom, dateTo):
+    print(devEUI)
+    print(dateFrom)
+    print(dateutil.parser.parse(dateTo))
     response = jsonify(error=0,
             msg_en="JustNothingYet")
     return response
