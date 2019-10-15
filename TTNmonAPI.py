@@ -188,15 +188,8 @@ def deleteDevice(devEUI):
                     msg_en="Device not found"),404
     return response
 
-@TTNmonAPI.route("/v2/metadata/packets/<devEUI>", methods=['GET'])
-def getPacketsMetadata(devEUI):
-    print(devEUI)
-    response = jsonify(error=0,
-            msg_en="JustNothingYet")
-    return response
-
-@TTNmonAPI.route("/v2/metadata/gateways/<devEUI>", methods=['GET'])
-def getGatewaysMetadata(devEUI):
+@TTNmonAPI.route("/v2/metadata/device/<devEUI>/stats", methods=['GET'])
+def getMetadataStats(devEUI):
     print(devEUI)
     response = jsonify(error=0,
             msg_en="JustNothingYet")
