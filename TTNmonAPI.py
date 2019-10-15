@@ -196,11 +196,27 @@ def getMetadataStats(devEUI):
             msg_en="JustNothingYet")
     return response
 
-@TTNmonAPI.route("/v2/metadata/device/<devEUI>/gateways/<dateFrom>/<dateTo>", methods=['GET'])
-def getGatewayList(devEUI, dateFrom, dateTo):
-    print(devEUI)
-    print(dateFrom)
-    print(dateutil.parser.parse(dateTo))
+@TTNmonAPI.route("/v2/metadata/device/<devPseudonym>/gateways/<dateFrom>/<dateTo>", methods=['GET'])
+def getGatewayList(devPseudonym, dateFrom, dateTo):
+    try:
+        dateFrom = dateutil.parser.parse(dateFrom)
+        dateTo = dateutil.parser.parse(dateTo)
+    except ValueError:
+        response = jsonify(error=1,
+                msg_en="Invalid date format"),400
+        return response
+
+    dev = device.device()
+
+    try:
+        dev.pseudonym = int(devPseudonym)
+    except ValueError:
+        response = jsonify(error=2,
+                msg_en="Invalid devPseudonym. Please supply an int"),400
+        return response
+
+    mySQL.getDevice(devPseudonym)
+
     response = jsonify(error=0,
             msg_en="JustNothingYet")
     return response
