@@ -216,7 +216,7 @@ def getGatewayList(devPseudonym, dateFrom, dateTo):
         return response
 
     mySQL.getDevice(dev)
-
+    influx.getGateways(dev, dateFrom, dateTo)
     response = jsonify(error=0,
             msg_en="JustNothingYet")
     return response

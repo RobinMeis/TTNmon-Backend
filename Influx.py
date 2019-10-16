@@ -78,3 +78,15 @@ class Influx:
     # Feteches the gateway metadata for a device within a specified timerange
     def getGatewaysMetadata(self, device, start, end):
         pass
+
+    # Fetches the list of reached gateways within a specified timerange
+    def getGateways(self, device, start, end):
+        query = "show TAG values from packets_gateways_metadata with KEY = \"gtwID\" WHERE devPseudonym = '$devPseudonym' and $timeFilter"
+        params = {
+          "devPseudonym": 1,
+          "start": start,
+          "end": end
+        }
+
+        result = client.query(query, bind_params=params)
+        print (result)
