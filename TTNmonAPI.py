@@ -191,7 +191,7 @@ def deleteDevice(devEUI):
                     msg_en="Device not found"),404
     return response
 
-@TTNmonAPI.route("/v2/metadata/device/<pseudonym>/packets/<dateFrom>/<dateTo>", methods=['GET'])
+@TTNmonAPI.route("/v2/metadata/device/<devPseudonym>/packets/<dateFrom>/<dateTo>", methods=['GET'])
 def getMetadataStats(devPseudonym, dateFrom, dateTo):
     dev = device.device() # Collect device information from DB
     try:
