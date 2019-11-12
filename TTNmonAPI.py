@@ -62,9 +62,10 @@ def webhook():
     packet = metadata.packet.packet()
     try:
         packet.fromTTN(request.json)
+        print(request.json)
     except Exception as e:
         response = jsonify(error=1, msg_en="Invalid data!")
-        log.invalid_packets.logWrite("%s\n\n%s" % (e, json.dumps(request.json)))
+        log.invalid_packets.logWrite("%s\n\n%s" % (e, request.data))
         return response,400
     else:
         if log.packets.enabled:
