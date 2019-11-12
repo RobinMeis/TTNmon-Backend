@@ -8,6 +8,7 @@ from MySQL import MySQL
 from Influx import Influx
 
 import metadata.packet
+import metadata.packets
 import log
 import device
 
@@ -189,9 +190,33 @@ def deleteDevice(devEUI):
                     msg_en="Device not found"),404
     return response
 
-@TTNmonAPI.route("/v2/metadata/device/<devEUI>/stats", methods=['GET'])
-def getMetadataStats(devEUI):
-    print(devEUI)
+@TTNmonAPI.route("/v2/metadata/device/<pseudonym>/packets/<dateFrom>/<dateTo>", methods=['GET'])
+def getMetadataStats(devPseudonym, dateFrom, dateTo):
+    dev = device.device() # Collect device information from DB
+    try:
+        dev.pseudonym = int(devPseudonym)
+    except ValueError:
+        response = jsonify(error=2,
+                msg_en="Invalid devPseudonym. Please supply an int"), 400
+        return response
+
+    if not mySQL.getDevice(dev):
+        response = jsonify(error=2,
+                          msg_en="devPseudonym not found"), 404
+        return response
+
+    try: # Check and Prepare date
+        dateFrom = dateutil.parser.parse(dateFrom)
+        dateTo = dateutil.parser.parse(dateTo)
+    except ValueError:
+        response = jsonify(error=1,
+                msg_en="Invalid date format"), 400
+        return response
+
+    pktData = influx.getPacketsMetadata(dev, start, end)
+    #pkts = packets.packets(dev)
+    #pkts.fromInflux()
+
     response = jsonify(error=0,
             msg_en="JustNothingYet")
     return response
