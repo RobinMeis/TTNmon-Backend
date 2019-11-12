@@ -5,5 +5,9 @@ class packets:
         self.packets = {}
         self.__device = device
 
-    def fromDB(self, data):
-        pass
+    def fromInflux(self, data):
+        for pkt in data:
+            pkt = packet.packet()
+            pkt.fromInflux(self.__device, data)
+            self.packets[pkt.timestamp] = pkt
+            print(pkt.timestamp)

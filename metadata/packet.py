@@ -37,6 +37,18 @@ class packet:
         for gateway in packet["metadata"]["gateways"]:
             self.__gateways.addGateway(gateway)
 
+    def fromInflux(self, device, packet):
+        self.device = device
+        self.counter = packet["packetCount"]
+        self.timestamp = packet["time"]
+        self.frequency = packet["frequency"]
+        self.modulation = packet["modulation"]
+        self.BW = packet["BW"]
+        self.CR_k = packet["CR_k"]
+        self.CR_n = packet["CR_n"]
+        self.SF = packet["SF"]
+        self.payloadLength = packet["payloadLength"]
+
     #counter getter/setter
     @property
     def counter(self):

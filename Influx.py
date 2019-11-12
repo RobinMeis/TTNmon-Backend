@@ -65,16 +65,30 @@ class Influx:
         self.cnx.write_points(cache)
 
     # Fetches a series of received packets for a device within the specified timerange
-    def getPacketsMetadata(self, device, start, end):
-        query = "SELECT * FROM packets_metadata WHERE devPseudonym=$devPseudonym and time>=$start and time<=$end"
+    def getPacketsMetadata(self, device, dateFrom, dateTo):
+        query = """SELECT
+                        time,
+                        packetCount,
+                        frequency,
+                        modulation,
+                        BW,
+                        CR_k,
+                        CR_n,
+                        SF,
+                        payloadLength
+                    FROM
+                        packets_metadata
+                    WHERE
+                        devPseudonym=$devPseudonym and
+                        time>=$dateFrom and
+                        time<=$dateTo"""
         params = {
-          "devPseudonym": device.pseudonym,
-          "start": start,
-          "end": end
+          "devPseudonym": str(device.pseudonym),
+          "dateFrom": dateFrom.strftime('%Y-%m-%dT%H:%M:%SZ'),
+          "dateTo": dateTo.strftime('%Y-%m-%dT%H:%M:%SZ')
         }
 
-        result = self.cnx.query(query, bind_params=params)
-        print (result)
+        return self.cnx.query(query, bind_params=params)
 
     # Fetches connection metadata for a device within the specified timerange
     def getPacketsGateways(self, device, start, end):
