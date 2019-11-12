@@ -39,15 +39,15 @@ class packet:
 
     def fromInflux(self, device, packet):
         self.device = device
-        self.counter = packet["packetCount"]
+        self.counter = int(packet["packetCount"])
         self.timestamp = packet["time"]
-        self.frequency = packet["frequency"]
+        self.frequency = float(packet["frequency"])
         self.modulation = packet["modulation"]
-        self.BW = packet["BW"]
-        self.CR_k = packet["CR_k"]
-        self.CR_n = packet["CR_n"]
-        self.SF = packet["SF"]
-        self.payloadLength = packet["payloadLength"]
+        self.BW = int(packet["BW"])
+        self.CR_k = int(packet["CR_k"])
+        self.CR_n = int(packet["CR_n"])
+        self.SF = int(packet["SF"])
+        self.payloadLength = int(packet["payloadLength"])
 
     #counter getter/setter
     @property
