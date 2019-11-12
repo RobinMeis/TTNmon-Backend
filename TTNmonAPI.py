@@ -214,7 +214,7 @@ def getMetadataStats(devPseudonym, dateFrom, dateTo):
                 msg_en="Invalid date format"), 400
         return response
 
-    pktData = influx.getPacketsMetadata(dev, start, end)
+    pktData = influx.getPacketsMetadata(dev, dateFrom, dateTo)
     #pkts = packets.packets(dev)
     #pkts.fromInflux()
 
