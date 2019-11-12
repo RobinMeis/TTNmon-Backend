@@ -3,6 +3,7 @@
 import datetime
 import dateutil.parser
 import re
+import base64
 
 import device
 from . import gateways
@@ -20,6 +21,7 @@ class packet:
         self.__CR = None
         self.__CR_k = None
         self.__CR_n = None
+        self.__payloadLength = None
         self.__gateways = gateways.gateways(self)
 
     def fromTTN(self, packet):
@@ -30,6 +32,7 @@ class packet:
         self.modulation = packet["metadata"]["modulation"]
         self.dataRate = packet["metadata"]["data_rate"]
         self.CR = packet["metadata"]["coding_rate"]
+        self.payloadLength = len(base64.b64decode(packet["payload_raw"]))
 
         for gateway in packet["metadata"]["gateways"]:
             self.__gateways.addGateway(gateway)
@@ -101,7 +104,7 @@ class packet:
                 self.__dataRate = results.group(0)
                 self.SF = int(results.group(1))
                 self.BW = int(results.group(2))
-            except  IndexError:
+            except IndexError:
                 raise ValueError("Invalid dataRate string")
         else:
             raise ValueError("Invalid type of dataRate")
@@ -182,3 +185,15 @@ class packet:
     @property
     def location(self):
         return self.device.location
+
+    # payloadLength getter/setter
+    @property
+    def payloadLength(self):
+        return self.__payloadLength
+
+    @payloadLength.setter
+    def payloadLength(self, payloadLength):
+        if (isinstance(payloadLength, int)):
+            self.__payloadLength = payloadLength
+        else:
+            raise ValueError("Invalid type of payloadLength")
