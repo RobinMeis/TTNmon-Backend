@@ -215,7 +215,7 @@ def getMetadataStats(devPseudonym, dateFrom, dateTo):
         return response
 
     pktData = influx.getPacketsMetadata(dev, dateFrom, dateTo)
-    pkts = packets.packets(dev)
+    pkts = metadata.packets.packets(dev)
     pkts.fromInflux(pktData)
 
     response = jsonify(error=0,
