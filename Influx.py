@@ -73,7 +73,7 @@ class Influx:
           "end": end
         }
 
-        result = client.query(query, bind_params=params)
+        result = self.cnx.query(query, bind_params=params)
         print (result)
 
     # Fetches connection metadata for a device within the specified timerange
