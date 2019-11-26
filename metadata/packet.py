@@ -33,7 +33,6 @@ class packet:
         self.dataRate = packet["metadata"]["data_rate"]
         self.CR = packet["metadata"]["coding_rate"]
         self.payloadLength = len(base64.b64decode(packet["payload_raw"]))
-
         for gateway in packet["metadata"]["gateways"]:
             self.__gateways.addGateway(gateway)
 
