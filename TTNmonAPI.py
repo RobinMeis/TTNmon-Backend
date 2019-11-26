@@ -217,9 +217,14 @@ def getMetadataStats(devPseudonym, dateFrom, dateTo):
     pktData = influx.getPacketsMetadata(dev, dateFrom, dateTo)
     pkts = metadata.packets.packets(dev)
     pkts.fromInflux(pktData.get_points())
+    pkts.calcStats()
 
     response = jsonify(error=0,
-            msg_en="JustNothingYet")
+                       minSF=pkts.minSF,
+                       maxSF=pkts.maxSF,
+                       minGatewayCount=pkts.minGatewayCount,
+                       maxGatewayCount=pkts.maxGatewayCount
+                       )
     return response
 
 @TTNmonAPI.route("/v2/metadata/device/<devPseudonym>/gateways/<dateFrom>/<dateTo>", methods=['GET'])
