@@ -21,6 +21,7 @@ class packet:
         self.__CR = None
         self.__CR_k = None
         self.__CR_n = None
+        self.__fport = None
         self.__payloadLength = None
         self.__gateways = gateways.gateways(self)
 
@@ -32,6 +33,7 @@ class packet:
         self.modulation = packet["metadata"]["modulation"]
         self.dataRate = packet["metadata"]["data_rate"]
         self.CR = packet["metadata"]["coding_rate"]
+        self.fport = packet["metadata"]["port"]
         self.payloadLength = len(base64.b64decode(packet["payload_raw"]))
         for gateway in packet["metadata"]["gateways"]:
             self.__gateways.addGateway(gateway)
@@ -134,6 +136,18 @@ class packet:
             self.__SF = SF
         else:
             raise ValueError("Invalid type of SF")
+
+    #fport getter/setter
+    @property
+    def fport(self):
+        return self.__fport
+
+    @SF.setter
+    def fport(self, fport):
+        if (isinstance(fport, int)):
+            self.__fport = fport
+        else:
+            raise ValueError("Invalid type of fport")
 
     #BW getter/setter
     @property

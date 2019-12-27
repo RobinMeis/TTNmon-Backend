@@ -33,7 +33,8 @@ class Influx:
                     "longitude": packet.location.longitude,
                     "altitude": packet.location.altitude,
                     "gatewayCount": len(packet.gateways),
-                    "payloadLength": packet.payloadLength
+                    "payloadLength": packet.payloadLength,
+                    "fport": packet.fport
                 }
             }
         )
@@ -95,7 +96,6 @@ class Influx:
 
     # Fetches connection metadata for a device within the specified timerange
     def getPacketsGateways(self, device, dateFrom, dateTo):
-        print(device.pseudonym)
         query = """SELECT
                        time,
                        RSSI,
@@ -120,3 +120,32 @@ class Influx:
         }
 
         return self.cnx.query(query, bind_params=params)
+
+    def countPackets(self, device, dateFrom, dateTo):
+        if (device == None):
+            query = """SELECT count(SF)
+                                    FROM
+                                        packets_metadata
+                                    WHERE
+                                        time>=$dateFrom and
+                                        time<=$dateTo"""
+        else:
+            query = """SELECT count(SF)
+                        FROM
+                            packets_metadata
+                        WHERE
+                            devPseudonym=$devPseudonym and
+                            time>=$dateFrom and
+                            time<=$dateTo"""
+
+        params = {
+            "devPseudonym": str(device.pseudonym),
+            "dateFrom": dateFrom.strftime('%Y-%m-%dT%H:%M:%SZ'),
+            "dateTo": dateTo.strftime('%Y-%m-%dT%H:%M:%SZ')
+        }
+
+        packets = 0
+        for line in cnx.query(query).get_points():
+            packets = line["count"]
+
+        return packets
