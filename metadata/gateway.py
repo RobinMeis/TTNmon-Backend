@@ -26,6 +26,14 @@ class gateway:
         self.rf_chain = metadata["rf_chain"]
         self.location.fromTTN(metadata)
 
+    def fromInflux(self, data):
+        self.gtwID = data["gtwID"]
+        self.timestamp = data["time"]
+        self.channel = int(data["channel"])
+        self.RSSI = data["RSSI"]
+        self.SNR = data["SNR"]
+        self.location.fromInflux(data)
+
     #time getter/setter
     @property
     def timestamp(self):

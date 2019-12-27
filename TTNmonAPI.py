@@ -11,6 +11,7 @@ import metadata.packet
 import metadata.packets
 import log
 import device
+import requests
 
 config = configparser.ConfigParser() #Load config
 config.read('TTNmon.conf')
@@ -70,6 +71,11 @@ def webhook():
     else:
         if log.packets.enabled:
             log.packets.logWrite(json.dumps(request.json))
+
+        try:
+            requests.get("http://127.0.0.1:8081/", timeout=0.5)
+        except:
+            print("no request")
 
         pseudonym = mySQL.getPseudonym(authorization, packet.device)
         if pseudonym == None:
@@ -214,40 +220,63 @@ def getMetadataStats(devPseudonym, dateFrom, dateTo):
                 msg_en="Invalid date format"), 400
         return response
 
-    pktData = influx.getPacketsMetadata(dev, dateFrom, dateTo)
+    pktData = influx.getPacketsMetadata(dev, dateFrom, dateTo) # Get packet data from Influx
     pkts = metadata.packets.packets(dev)
-    pkts.fromInflux(pktData.get_points())
+    pkts.packetsFromInflux(pktData.get_points())
+
+    gtwData = influx.getPacketsGateways(dev, dateFrom, dateTo) # Get gateway metadata for packets
+    pkts.gatewaysFromInflux(gtwData.get_points())
+
     pkts.calcStats()
 
-    response = jsonify(error=0,
-                       minSF=pkts.minSF,
-                       maxSF=pkts.maxSF,
-                       minGatewayCount=pkts.minGatewayCount,
-                       maxGatewayCount=pkts.maxGatewayCount
-                       )
-    return response
+    data = {
+                         "SF": {
+                           "min": pkts.minSF,
+                           "max": pkts.maxSF,
+                         },
+                         "gatewayCount": {
+                           "min": pkts.minGatewayCount,
+                           "max": pkts.maxGatewayCount
+                         },
+                         "RSSI": {
+                           "min": pkts.minRSSI,
+                           "max": pkts.maxRSSI
+                         },
+                         "SNR": {
+                           "min": pkts.minSNR,
+                           "max": pkts.maxSNR
+                         },
+                         "gateways": {},
+                         "node": {}
+                       }
 
-@TTNmonAPI.route("/v2/metadata/device/<devPseudonym>/gateways/<dateFrom>/<dateTo>", methods=['GET'])
-def getGatewayList(devPseudonym, dateFrom, dateTo):
-    try:
-        dateFrom = dateutil.parser.parse(dateFrom)
-        dateTo = dateutil.parser.parse(dateTo)
-    except ValueError:
-        response = jsonify(error=1,
-                msg_en="Invalid date format"),400
-        return response
+    data["node"] = {
+                   "latitude": dev.location.latitude,
+                   "longitude": dev.location.longitude,
+                   "altitude": dev.location.altitude
+                   }
+    data["packets"] = pkts.count
 
-    dev = device.device()
+    for gtwID, gtw in pkts.gateways.items():
+        data["gateways"][gtwID] = {}
+        data["gateways"][gtwID]["RSSI"] = {
+                                           "min": gtw["RSSImin"],
+                                           "max": gtw["RSSImax"],}
+        data["gateways"][gtwID]["SNR"] = {
+                                           "min": gtw["SNRmin"],
+                                           "max": gtw["SNRmax"],
+                                         }
+        data["gateways"][gtwID]["packets"] = gtw["packets"]
+        data["gateways"][gtwID]["location"] = {
+                   "latitude": gtw["obj"].location.latitude,
+                   "longitude": gtw["obj"].location.longitude,
+                   "altitude": gtw["obj"].location.altitude
+                   }
+        data["gateways"][gtwID]["description"] = "ToDo"
+        data["gateways"][gtwID]["loss"] = 100-(100/pkts.count*gtw["packets"])
 
-    try:
-        dev.pseudonym = int(devPseudonym)
-    except ValueError:
-        response = jsonify(error=2,
-                msg_en="Invalid devPseudonym. Please supply an int"),400
-        return response
 
-    mySQL.getDevice(dev)
-    influx.getGateways(dev, dateFrom, dateTo)
-    response = jsonify(error=0,
-            msg_en="JustNothingYet")
+
+    response = jsonify(error = 0,
+                       data = data)
     return response

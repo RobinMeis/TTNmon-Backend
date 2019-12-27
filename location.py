@@ -39,6 +39,19 @@ class location:
         except (KeyError, ValueError):
             self.__altitude = None
 
+    def fromInflux(self, row):
+        try:
+            self.latitude = row["latitude"]
+            self.longitude = row["longitude"]
+        except (KeyError, ValueError):
+            self.__latitude = None
+            self.__longitude = None
+
+        try:
+            self.altitude = row["altitude"]
+        except (KeyError, ValueError):
+            self.__altitude = None
+
     #latitude getter/setter
     @property
     def latitude(self):

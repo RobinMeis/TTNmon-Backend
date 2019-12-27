@@ -75,7 +75,10 @@ class Influx:
                         CR_k,
                         CR_n,
                         SF,
-                        payloadLength
+                        payloadLength,
+                        latitude,
+                        longitude,
+                        altitude
                     FROM
                         packets_metadata
                     WHERE
@@ -91,13 +94,29 @@ class Influx:
         return self.cnx.query(query, bind_params=params)
 
     # Fetches connection metadata for a device within the specified timerange
-    def getPacketsGateways(self, device, start, end):
-        query = "SELECT * FROM packets_gateways_metadata WHERE devPseudonym = $devPseudonym and time < $start and time > $end"
+    def getPacketsGateways(self, device, dateFrom, dateTo):
+        print(device.pseudonym)
+        query = """SELECT
+                       time,
+                       RSSI,
+                       SNR,
+                       channel,
+                       gtwID,
+                       gtwTime,
+                       latitude,
+                       longitude,
+                       altitude,
+                       distance
+                   FROM
+                       packets_gateways_metadata
+                   WHERE
+                       devPseudonym=$devPseudonym and
+                       time>=$dateFrom and
+                       time<=$dateTo"""
         params = {
-          "devPseudonym": device.pseudonym,
-          "start": start,
-          "end": end
+          "devPseudonym": str(device.pseudonym),
+          "dateFrom": dateFrom.strftime('%Y-%m-%dT%H:%M:%SZ'),
+          "dateTo": dateTo.strftime('%Y-%m-%dT%H:%M:%SZ')
         }
 
-        result = self.cnx.query(query, params=params)
-        print (result)
+        return self.cnx.query(query, bind_params=params)

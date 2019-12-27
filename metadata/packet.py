@@ -48,6 +48,9 @@ class packet:
         self.SF = int(packet["SF"])
         self.payloadLength = int(packet["payloadLength"])
 
+    def addGateway(self, gateway):
+        self.__gateways.addGatewayObj(gateway)
+
     #counter getter/setter
     @property
     def counter(self):
@@ -208,3 +211,7 @@ class packet:
             self.__payloadLength = payloadLength
         else:
             raise ValueError("Invalid type of payloadLength")
+
+    @property
+    def gatewayCount(self):
+        return self.__gateways.gatewayCount
